@@ -1,0 +1,1113 @@
+greeting	say hi to me
+greeting	say hi to me please
+greeting	say hi to me for me
+greeting	say hi to me right now
+greeting	say hi to me today
+greeting	hey say hi to me
+greeting	hey say hi to me please
+greeting	hey say hi to me for me
+greeting	hey say hi to me right now
+greeting	hey say hi to me today
+greeting	hi say hi to me
+greeting	hi say hi to me please
+greeting	hi say hi to me for me
+greeting	hi say hi to me right now
+greeting	hi say hi to me today
+greeting	hello say hi to me
+greeting	hello say hi to me please
+greeting	hello say hi to me for me
+greeting	hello say hi to me right now
+greeting	hello say hi to me today
+greeting	could you say hi to me
+greeting	could you say hi to me please
+greeting	could you say hi to me for me
+greeting	could you say hi to me right now
+greeting	could you say hi to me today
+greeting	can you say hi to me
+greeting	can you say hi to me please
+greeting	can you say hi to me for me
+greeting	can you say hi to me right now
+greeting	can you say hi to me today
+greeting	please say hi to me
+greeting	please say hi to me please
+greeting	please say hi to me for me
+greeting	please say hi to me right now
+greeting	please say hi to me today
+greeting	greet me nicely
+greeting	greet me nicely please
+greeting	greet me nicely for me
+greeting	greet me nicely right now
+greeting	greet me nicely today
+greeting	hey greet me nicely
+greeting	hey greet me nicely please
+greeting	hey greet me nicely for me
+greeting	hey greet me nicely right now
+greeting	hey greet me nicely today
+greeting	hi greet me nicely
+greeting	hi greet me nicely please
+greeting	hi greet me nicely for me
+greeting	hi greet me nicely right now
+greeting	hi greet me nicely today
+greeting	hello greet me nicely
+greeting	hello greet me nicely please
+greeting	hello greet me nicely for me
+greeting	hello greet me nicely right now
+greeting	hello greet me nicely today
+greeting	could you greet me nicely
+greeting	could you greet me nicely please
+greeting	could you greet me nicely for me
+greeting	could you greet me nicely right now
+greeting	could you greet me nicely today
+greeting	can you greet me nicely
+greeting	can you greet me nicely please
+greeting	can you greet me nicely for me
+greeting	can you greet me nicely right now
+greeting	can you greet me nicely today
+greeting	please greet me nicely
+greeting	please greet me nicely please
+greeting	please greet me nicely for me
+greeting	please greet me nicely right now
+greeting	please greet me nicely today
+greeting	start a friendly conversation
+greeting	start a friendly conversation please
+greeting	start a friendly conversation for me
+greeting	start a friendly conversation right now
+greeting	start a friendly conversation today
+greeting	hey start a friendly conversation
+greeting	hey start a friendly conversation please
+greeting	hey start a friendly conversation for me
+greeting	hey start a friendly conversation right now
+greeting	hey start a friendly conversation today
+greeting	hi start a friendly conversation
+greeting	hi start a friendly conversation please
+greeting	hi start a friendly conversation for me
+greeting	hi start a friendly conversation right now
+greeting	hi start a friendly conversation today
+greeting	hello start a friendly conversation
+greeting	hello start a friendly conversation please
+greeting	hello start a friendly conversation for me
+greeting	hello start a friendly conversation right now
+greeting	hello start a friendly conversation today
+greeting	could you start a friendly conversation
+greeting	could you start a friendly conversation please
+greeting	could you start a friendly conversation for me
+greeting	could you start a friendly conversation right now
+greeting	could you start a friendly conversation today
+greeting	can you start a friendly conversation
+greeting	can you start a friendly conversation please
+greeting	can you start a friendly conversation for me
+greeting	can you start a friendly conversation right now
+greeting	can you start a friendly conversation today
+greeting	please start a friendly conversation
+greeting	please start a friendly conversation please
+greeting	please start a friendly conversation for me
+greeting	please start a friendly conversation right now
+greeting	please start a friendly conversation today
+greeting	welcome me
+greeting	welcome me please
+greeting	welcome me for me
+greeting	welcome me right now
+greeting	welcome me today
+greeting	hey welcome me
+greeting	hey welcome me please
+greeting	hey welcome me for me
+greeting	hey welcome me right now
+greeting	hey welcome me today
+greeting	hi welcome me
+greeting	hi welcome me please
+greeting	hi welcome me for me
+greeting	hi welcome me right now
+greeting	hi welcome me today
+greeting	hello welcome me
+greeting	hello welcome me please
+greeting	hello welcome me for me
+greeting	hello welcome me right now
+greeting	hello welcome me today
+greeting	could you welcome me
+greeting	could you welcome me please
+greeting	could you welcome me for me
+greeting	could you welcome me right now
+greeting	could you welcome me today
+greeting	can you welcome me
+greeting	can you welcome me please
+greeting	can you welcome me for me
+greeting	can you welcome me right now
+greeting	can you welcome me today
+greeting	please welcome me
+greeting	please welcome me please
+greeting	please welcome me for me
+greeting	please welcome me right now
+greeting	please welcome me today
+greeting	say hello in a casual way
+greeting	say hello in a casual way please
+greeting	say hello in a casual way for me
+greeting	say hello in a casual way right now
+greeting	say hello in a casual way today
+greeting	hey say hello in a casual way
+greeting	hey say hello in a casual way please
+greeting	hey say hello in a casual way for me
+greeting	hey say hello in a casual way right now
+greeting	hey say hello in a casual way today
+greeting	hi say hello in a casual way
+greeting	hi say hello in a casual way please
+greeting	hi say hello in a casual way for me
+greeting	hi say hello in a casual way right now
+greeting	hi say hello in a casual way today
+greeting	hello say hello in a casual way
+greeting	hello say hello in a casual way please
+greeting	hello say hello in a casual way for me
+greeting	hello say hello in a casual way right now
+greeting	hello say hello in a casual way today
+greeting	could you say hello in a casual way
+greeting	could you say hello in a casual way please
+greeting	could you say hello in a casual way for me
+greeting	could you say hello in a casual way right now
+greeting	could you say hello in a casual way today
+greeting	can you say hello in a casual way
+greeting	can you say hello in a casual way please
+greeting	can you say hello in a casual way for me
+greeting	can you say hello in a casual way right now
+greeting	can you say hello in a casual way today
+greeting	please say hello in a casual way
+greeting	please say hello in a casual way please
+greeting	please say hello in a casual way for me
+greeting	please say hello in a casual way right now
+greeting	please say hello in a casual way today
+goodbye	say goodbye in a friendly way
+goodbye	say goodbye in a friendly way please
+goodbye	say goodbye in a friendly way for me
+goodbye	say goodbye in a friendly way right now
+goodbye	say goodbye in a friendly way today
+goodbye	hey say goodbye in a friendly way
+goodbye	hey say goodbye in a friendly way please
+goodbye	hey say goodbye in a friendly way for me
+goodbye	hey say goodbye in a friendly way right now
+goodbye	hey say goodbye in a friendly way today
+goodbye	hi say goodbye in a friendly way
+goodbye	hi say goodbye in a friendly way please
+goodbye	hi say goodbye in a friendly way for me
+goodbye	hi say goodbye in a friendly way right now
+goodbye	hi say goodbye in a friendly way today
+goodbye	hello say goodbye in a friendly way
+goodbye	hello say goodbye in a friendly way please
+goodbye	hello say goodbye in a friendly way for me
+goodbye	hello say goodbye in a friendly way right now
+goodbye	hello say goodbye in a friendly way today
+goodbye	could you say goodbye in a friendly way
+goodbye	could you say goodbye in a friendly way please
+goodbye	could you say goodbye in a friendly way for me
+goodbye	could you say goodbye in a friendly way right now
+goodbye	could you say goodbye in a friendly way today
+goodbye	can you say goodbye in a friendly way
+goodbye	can you say goodbye in a friendly way please
+goodbye	can you say goodbye in a friendly way for me
+goodbye	can you say goodbye in a friendly way right now
+goodbye	can you say goodbye in a friendly way today
+goodbye	please say goodbye in a friendly way
+goodbye	please say goodbye in a friendly way please
+goodbye	please say goodbye in a friendly way for me
+goodbye	please say goodbye in a friendly way right now
+goodbye	please say goodbye in a friendly way today
+goodbye	end this chat politely
+goodbye	end this chat politely please
+goodbye	end this chat politely for me
+goodbye	end this chat politely right now
+goodbye	end this chat politely today
+goodbye	hey end this chat politely
+goodbye	hey end this chat politely please
+goodbye	hey end this chat politely for me
+goodbye	hey end this chat politely right now
+goodbye	hey end this chat politely today
+goodbye	hi end this chat politely
+goodbye	hi end this chat politely please
+goodbye	hi end this chat politely for me
+goodbye	hi end this chat politely right now
+goodbye	hi end this chat politely today
+goodbye	hello end this chat politely
+goodbye	hello end this chat politely please
+goodbye	hello end this chat politely for me
+goodbye	hello end this chat politely right now
+goodbye	hello end this chat politely today
+goodbye	could you end this chat politely
+goodbye	could you end this chat politely please
+goodbye	could you end this chat politely for me
+goodbye	could you end this chat politely right now
+goodbye	could you end this chat politely today
+goodbye	can you end this chat politely
+goodbye	can you end this chat politely please
+goodbye	can you end this chat politely for me
+goodbye	can you end this chat politely right now
+goodbye	can you end this chat politely today
+goodbye	please end this chat politely
+goodbye	please end this chat politely please
+goodbye	please end this chat politely for me
+goodbye	please end this chat politely right now
+goodbye	please end this chat politely today
+goodbye	tell me farewell
+goodbye	tell me farewell please
+goodbye	tell me farewell for me
+goodbye	tell me farewell right now
+goodbye	tell me farewell today
+goodbye	hey tell me farewell
+goodbye	hey tell me farewell please
+goodbye	hey tell me farewell for me
+goodbye	hey tell me farewell right now
+goodbye	hey tell me farewell today
+goodbye	hi tell me farewell
+goodbye	hi tell me farewell please
+goodbye	hi tell me farewell for me
+goodbye	hi tell me farewell right now
+goodbye	hi tell me farewell today
+goodbye	hello tell me farewell
+goodbye	hello tell me farewell please
+goodbye	hello tell me farewell for me
+goodbye	hello tell me farewell right now
+goodbye	hello tell me farewell today
+goodbye	could you tell me farewell
+goodbye	could you tell me farewell please
+goodbye	could you tell me farewell for me
+goodbye	could you tell me farewell right now
+goodbye	could you tell me farewell today
+goodbye	can you tell me farewell
+goodbye	can you tell me farewell please
+goodbye	can you tell me farewell for me
+goodbye	can you tell me farewell right now
+goodbye	can you tell me farewell today
+goodbye	please tell me farewell
+goodbye	please tell me farewell please
+goodbye	please tell me farewell for me
+goodbye	please tell me farewell right now
+goodbye	please tell me farewell today
+goodbye	wrap up our conversation
+goodbye	wrap up our conversation please
+goodbye	wrap up our conversation for me
+goodbye	wrap up our conversation right now
+goodbye	wrap up our conversation today
+goodbye	hey wrap up our conversation
+goodbye	hey wrap up our conversation please
+goodbye	hey wrap up our conversation for me
+goodbye	hey wrap up our conversation right now
+goodbye	hey wrap up our conversation today
+goodbye	hi wrap up our conversation
+goodbye	hi wrap up our conversation please
+goodbye	hi wrap up our conversation for me
+goodbye	hi wrap up our conversation right now
+goodbye	hi wrap up our conversation today
+goodbye	hello wrap up our conversation
+goodbye	hello wrap up our conversation please
+goodbye	hello wrap up our conversation for me
+goodbye	hello wrap up our conversation right now
+goodbye	hello wrap up our conversation today
+goodbye	could you wrap up our conversation
+goodbye	could you wrap up our conversation please
+goodbye	could you wrap up our conversation for me
+goodbye	could you wrap up our conversation right now
+goodbye	could you wrap up our conversation today
+goodbye	can you wrap up our conversation
+goodbye	can you wrap up our conversation please
+goodbye	can you wrap up our conversation for me
+goodbye	can you wrap up our conversation right now
+goodbye	can you wrap up our conversation today
+goodbye	please wrap up our conversation
+goodbye	please wrap up our conversation please
+goodbye	please wrap up our conversation for me
+goodbye	please wrap up our conversation right now
+goodbye	please wrap up our conversation today
+help	explain how you can assist me
+help	explain how you can assist me please
+help	explain how you can assist me for me
+help	explain how you can assist me right now
+help	explain how you can assist me today
+help	hey explain how you can assist me
+help	hey explain how you can assist me please
+help	hey explain how you can assist me for me
+help	hey explain how you can assist me right now
+help	hey explain how you can assist me today
+help	hi explain how you can assist me
+help	hi explain how you can assist me please
+help	hi explain how you can assist me for me
+help	hi explain how you can assist me right now
+help	hi explain how you can assist me today
+help	hello explain how you can assist me
+help	hello explain how you can assist me please
+help	hello explain how you can assist me for me
+help	hello explain how you can assist me right now
+help	hello explain how you can assist me today
+help	could you explain how you can assist me
+help	could you explain how you can assist me please
+help	could you explain how you can assist me for me
+help	could you explain how you can assist me right now
+help	could you explain how you can assist me today
+help	can you explain how you can assist me
+help	can you explain how you can assist me please
+help	can you explain how you can assist me for me
+help	can you explain how you can assist me right now
+help	can you explain how you can assist me today
+help	please explain how you can assist me
+help	please explain how you can assist me please
+help	please explain how you can assist me for me
+help	please explain how you can assist me right now
+help	please explain how you can assist me today
+help	tell me what you are able to do
+help	tell me what you are able to do please
+help	tell me what you are able to do for me
+help	tell me what you are able to do right now
+help	tell me what you are able to do today
+help	hey tell me what you are able to do
+help	hey tell me what you are able to do please
+help	hey tell me what you are able to do for me
+help	hey tell me what you are able to do right now
+help	hey tell me what you are able to do today
+help	hi tell me what you are able to do
+help	hi tell me what you are able to do please
+help	hi tell me what you are able to do for me
+help	hi tell me what you are able to do right now
+help	hi tell me what you are able to do today
+help	hello tell me what you are able to do
+help	hello tell me what you are able to do please
+help	hello tell me what you are able to do for me
+help	hello tell me what you are able to do right now
+help	hello tell me what you are able to do today
+help	could you tell me what you are able to do
+help	could you tell me what you are able to do please
+help	could you tell me what you are able to do for me
+help	could you tell me what you are able to do right now
+help	could you tell me what you are able to do today
+help	can you tell me what you are able to do
+help	can you tell me what you are able to do please
+help	can you tell me what you are able to do for me
+help	can you tell me what you are able to do right now
+help	can you tell me what you are able to do today
+help	please tell me what you are able to do
+help	please tell me what you are able to do please
+help	please tell me what you are able to do for me
+help	please tell me what you are able to do right now
+help	please tell me what you are able to do today
+help	guide me on how to use this chatbot
+help	guide me on how to use this chatbot please
+help	guide me on how to use this chatbot for me
+help	guide me on how to use this chatbot right now
+help	guide me on how to use this chatbot today
+help	hey guide me on how to use this chatbot
+help	hey guide me on how to use this chatbot please
+help	hey guide me on how to use this chatbot for me
+help	hey guide me on how to use this chatbot right now
+help	hey guide me on how to use this chatbot today
+help	hi guide me on how to use this chatbot
+help	hi guide me on how to use this chatbot please
+help	hi guide me on how to use this chatbot for me
+help	hi guide me on how to use this chatbot right now
+help	hi guide me on how to use this chatbot today
+help	hello guide me on how to use this chatbot
+help	hello guide me on how to use this chatbot please
+help	hello guide me on how to use this chatbot for me
+help	hello guide me on how to use this chatbot right now
+help	hello guide me on how to use this chatbot today
+help	could you guide me on how to use this chatbot
+help	could you guide me on how to use this chatbot please
+help	could you guide me on how to use this chatbot for me
+help	could you guide me on how to use this chatbot right now
+help	could you guide me on how to use this chatbot today
+help	can you guide me on how to use this chatbot
+help	can you guide me on how to use this chatbot please
+help	can you guide me on how to use this chatbot for me
+help	can you guide me on how to use this chatbot right now
+help	can you guide me on how to use this chatbot today
+help	please guide me on how to use this chatbot
+help	please guide me on how to use this chatbot please
+help	please guide me on how to use this chatbot for me
+help	please guide me on how to use this chatbot right now
+help	please guide me on how to use this chatbot today
+help	help me understand your features
+help	help me understand your features please
+help	help me understand your features for me
+help	help me understand your features right now
+help	help me understand your features today
+help	hey help me understand your features
+help	hey help me understand your features please
+help	hey help me understand your features for me
+help	hey help me understand your features right now
+help	hey help me understand your features today
+help	hi help me understand your features
+help	hi help me understand your features please
+help	hi help me understand your features for me
+help	hi help me understand your features right now
+help	hi help me understand your features today
+help	hello help me understand your features
+help	hello help me understand your features please
+help	hello help me understand your features for me
+help	hello help me understand your features right now
+help	hello help me understand your features today
+help	could you help me understand your features
+help	could you help me understand your features please
+help	could you help me understand your features for me
+help	could you help me understand your features right now
+help	could you help me understand your features today
+help	can you help me understand your features
+help	can you help me understand your features please
+help	can you help me understand your features for me
+help	can you help me understand your features right now
+help	can you help me understand your features today
+help	please help me understand your features
+help	please help me understand your features please
+help	please help me understand your features for me
+help	please help me understand your features right now
+help	please help me understand your features today
+math_question	calculate 27 plus 45
+math_question	calculate 27 plus 45 please
+math_question	calculate 27 plus 45 for me
+math_question	calculate 27 plus 45 right now
+math_question	calculate 27 plus 45 today
+math_question	hey calculate 27 plus 45
+math_question	hey calculate 27 plus 45 please
+math_question	hey calculate 27 plus 45 for me
+math_question	hey calculate 27 plus 45 right now
+math_question	hey calculate 27 plus 45 today
+math_question	hi calculate 27 plus 45
+math_question	hi calculate 27 plus 45 please
+math_question	hi calculate 27 plus 45 for me
+math_question	hi calculate 27 plus 45 right now
+math_question	hi calculate 27 plus 45 today
+math_question	hello calculate 27 plus 45
+math_question	hello calculate 27 plus 45 please
+math_question	hello calculate 27 plus 45 for me
+math_question	hello calculate 27 plus 45 right now
+math_question	hello calculate 27 plus 45 today
+math_question	could you calculate 27 plus 45
+math_question	could you calculate 27 plus 45 please
+math_question	could you calculate 27 plus 45 for me
+math_question	could you calculate 27 plus 45 right now
+math_question	could you calculate 27 plus 45 today
+math_question	can you calculate 27 plus 45
+math_question	can you calculate 27 plus 45 please
+math_question	can you calculate 27 plus 45 for me
+math_question	can you calculate 27 plus 45 right now
+math_question	can you calculate 27 plus 45 today
+math_question	please calculate 27 plus 45
+math_question	please calculate 27 plus 45 please
+math_question	please calculate 27 plus 45 for me
+math_question	please calculate 27 plus 45 right now
+math_question	please calculate 27 plus 45 today
+math_question	work out 123 minus 58
+math_question	work out 123 minus 58 please
+math_question	work out 123 minus 58 for me
+math_question	work out 123 minus 58 right now
+math_question	work out 123 minus 58 today
+math_question	hey work out 123 minus 58
+math_question	hey work out 123 minus 58 please
+math_question	hey work out 123 minus 58 for me
+math_question	hey work out 123 minus 58 right now
+math_question	hey work out 123 minus 58 today
+math_question	hi work out 123 minus 58
+math_question	hi work out 123 minus 58 please
+math_question	hi work out 123 minus 58 for me
+math_question	hi work out 123 minus 58 right now
+math_question	hi work out 123 minus 58 today
+math_question	hello work out 123 minus 58
+math_question	hello work out 123 minus 58 please
+math_question	hello work out 123 minus 58 for me
+math_question	hello work out 123 minus 58 right now
+math_question	hello work out 123 minus 58 today
+math_question	could you work out 123 minus 58
+math_question	could you work out 123 minus 58 please
+math_question	could you work out 123 minus 58 for me
+math_question	could you work out 123 minus 58 right now
+math_question	could you work out 123 minus 58 today
+math_question	can you work out 123 minus 58
+math_question	can you work out 123 minus 58 please
+math_question	can you work out 123 minus 58 for me
+math_question	can you work out 123 minus 58 right now
+math_question	can you work out 123 minus 58 today
+math_question	please work out 123 minus 58
+math_question	please work out 123 minus 58 please
+math_question	please work out 123 minus 58 for me
+math_question	please work out 123 minus 58 right now
+math_question	please work out 123 minus 58 today
+math_question	multiply 14 by 19
+math_question	multiply 14 by 19 please
+math_question	multiply 14 by 19 for me
+math_question	multiply 14 by 19 right now
+math_question	multiply 14 by 19 today
+math_question	hey multiply 14 by 19
+math_question	hey multiply 14 by 19 please
+math_question	hey multiply 14 by 19 for me
+math_question	hey multiply 14 by 19 right now
+math_question	hey multiply 14 by 19 today
+math_question	hi multiply 14 by 19
+math_question	hi multiply 14 by 19 please
+math_question	hi multiply 14 by 19 for me
+math_question	hi multiply 14 by 19 right now
+math_question	hi multiply 14 by 19 today
+math_question	hello multiply 14 by 19
+math_question	hello multiply 14 by 19 please
+math_question	hello multiply 14 by 19 for me
+math_question	hello multiply 14 by 19 right now
+math_question	hello multiply 14 by 19 today
+math_question	could you multiply 14 by 19
+math_question	could you multiply 14 by 19 please
+math_question	could you multiply 14 by 19 for me
+math_question	could you multiply 14 by 19 right now
+math_question	could you multiply 14 by 19 today
+math_question	can you multiply 14 by 19
+math_question	can you multiply 14 by 19 please
+math_question	can you multiply 14 by 19 for me
+math_question	can you multiply 14 by 19 right now
+math_question	can you multiply 14 by 19 today
+math_question	please multiply 14 by 19
+math_question	please multiply 14 by 19 please
+math_question	please multiply 14 by 19 for me
+math_question	please multiply 14 by 19 right now
+math_question	please multiply 14 by 19 today
+math_question	divide 144 by 12
+math_question	divide 144 by 12 please
+math_question	divide 144 by 12 for me
+math_question	divide 144 by 12 right now
+math_question	divide 144 by 12 today
+math_question	hey divide 144 by 12
+math_question	hey divide 144 by 12 please
+math_question	hey divide 144 by 12 for me
+math_question	hey divide 144 by 12 right now
+math_question	hey divide 144 by 12 today
+math_question	hi divide 144 by 12
+math_question	hi divide 144 by 12 please
+math_question	hi divide 144 by 12 for me
+math_question	hi divide 144 by 12 right now
+math_question	hi divide 144 by 12 today
+math_question	hello divide 144 by 12
+math_question	hello divide 144 by 12 please
+math_question	hello divide 144 by 12 for me
+math_question	hello divide 144 by 12 right now
+math_question	hello divide 144 by 12 today
+math_question	could you divide 144 by 12
+math_question	could you divide 144 by 12 please
+math_question	could you divide 144 by 12 for me
+math_question	could you divide 144 by 12 right now
+math_question	could you divide 144 by 12 today
+math_question	can you divide 144 by 12
+math_question	can you divide 144 by 12 please
+math_question	can you divide 144 by 12 for me
+math_question	can you divide 144 by 12 right now
+math_question	can you divide 144 by 12 today
+math_question	please divide 144 by 12
+math_question	please divide 144 by 12 please
+math_question	please divide 144 by 12 for me
+math_question	please divide 144 by 12 right now
+math_question	please divide 144 by 12 today
+math_question	figure out 3.75 times 8.2
+math_question	figure out 3.75 times 8.2 please
+math_question	figure out 3.75 times 8.2 for me
+math_question	figure out 3.75 times 8.2 right now
+math_question	figure out 3.75 times 8.2 today
+math_question	hey figure out 3.75 times 8.2
+math_question	hey figure out 3.75 times 8.2 please
+math_question	hey figure out 3.75 times 8.2 for me
+math_question	hey figure out 3.75 times 8.2 right now
+math_question	hey figure out 3.75 times 8.2 today
+math_question	hi figure out 3.75 times 8.2
+math_question	hi figure out 3.75 times 8.2 please
+math_question	hi figure out 3.75 times 8.2 for me
+math_question	hi figure out 3.75 times 8.2 right now
+math_question	hi figure out 3.75 times 8.2 today
+math_question	hello figure out 3.75 times 8.2
+math_question	hello figure out 3.75 times 8.2 please
+math_question	hello figure out 3.75 times 8.2 for me
+math_question	hello figure out 3.75 times 8.2 right now
+math_question	hello figure out 3.75 times 8.2 today
+math_question	could you figure out 3.75 times 8.2
+math_question	could you figure out 3.75 times 8.2 please
+math_question	could you figure out 3.75 times 8.2 for me
+math_question	could you figure out 3.75 times 8.2 right now
+math_question	could you figure out 3.75 times 8.2 today
+math_question	can you figure out 3.75 times 8.2
+math_question	can you figure out 3.75 times 8.2 please
+math_question	can you figure out 3.75 times 8.2 for me
+math_question	can you figure out 3.75 times 8.2 right now
+math_question	can you figure out 3.75 times 8.2 today
+math_question	please figure out 3.75 times 8.2
+math_question	please figure out 3.75 times 8.2 please
+math_question	please figure out 3.75 times 8.2 for me
+math_question	please figure out 3.75 times 8.2 right now
+math_question	please figure out 3.75 times 8.2 today
+joke	tell me a technology joke
+joke	tell me a technology joke please
+joke	tell me a technology joke for me
+joke	tell me a technology joke right now
+joke	tell me a technology joke today
+joke	hey tell me a technology joke
+joke	hey tell me a technology joke please
+joke	hey tell me a technology joke for me
+joke	hey tell me a technology joke right now
+joke	hey tell me a technology joke today
+joke	hi tell me a technology joke
+joke	hi tell me a technology joke please
+joke	hi tell me a technology joke for me
+joke	hi tell me a technology joke right now
+joke	hi tell me a technology joke today
+joke	hello tell me a technology joke
+joke	hello tell me a technology joke please
+joke	hello tell me a technology joke for me
+joke	hello tell me a technology joke right now
+joke	hello tell me a technology joke today
+joke	could you tell me a technology joke
+joke	could you tell me a technology joke please
+joke	could you tell me a technology joke for me
+joke	could you tell me a technology joke right now
+joke	could you tell me a technology joke today
+joke	can you tell me a technology joke
+joke	can you tell me a technology joke please
+joke	can you tell me a technology joke for me
+joke	can you tell me a technology joke right now
+joke	can you tell me a technology joke today
+joke	please tell me a technology joke
+joke	please tell me a technology joke please
+joke	please tell me a technology joke for me
+joke	please tell me a technology joke right now
+joke	please tell me a technology joke today
+joke	share a short funny joke
+joke	share a short funny joke please
+joke	share a short funny joke for me
+joke	share a short funny joke right now
+joke	share a short funny joke today
+joke	hey share a short funny joke
+joke	hey share a short funny joke please
+joke	hey share a short funny joke for me
+joke	hey share a short funny joke right now
+joke	hey share a short funny joke today
+joke	hi share a short funny joke
+joke	hi share a short funny joke please
+joke	hi share a short funny joke for me
+joke	hi share a short funny joke right now
+joke	hi share a short funny joke today
+joke	hello share a short funny joke
+joke	hello share a short funny joke please
+joke	hello share a short funny joke for me
+joke	hello share a short funny joke right now
+joke	hello share a short funny joke today
+joke	could you share a short funny joke
+joke	could you share a short funny joke please
+joke	could you share a short funny joke for me
+joke	could you share a short funny joke right now
+joke	could you share a short funny joke today
+joke	can you share a short funny joke
+joke	can you share a short funny joke please
+joke	can you share a short funny joke for me
+joke	can you share a short funny joke right now
+joke	can you share a short funny joke today
+joke	please share a short funny joke
+joke	please share a short funny joke please
+joke	please share a short funny joke for me
+joke	please share a short funny joke right now
+joke	please share a short funny joke today
+joke	give me a clever one liner
+joke	give me a clever one liner please
+joke	give me a clever one liner for me
+joke	give me a clever one liner right now
+joke	give me a clever one liner today
+joke	hey give me a clever one liner
+joke	hey give me a clever one liner please
+joke	hey give me a clever one liner for me
+joke	hey give me a clever one liner right now
+joke	hey give me a clever one liner today
+joke	hi give me a clever one liner
+joke	hi give me a clever one liner please
+joke	hi give me a clever one liner for me
+joke	hi give me a clever one liner right now
+joke	hi give me a clever one liner today
+joke	hello give me a clever one liner
+joke	hello give me a clever one liner please
+joke	hello give me a clever one liner for me
+joke	hello give me a clever one liner right now
+joke	hello give me a clever one liner today
+joke	could you give me a clever one liner
+joke	could you give me a clever one liner please
+joke	could you give me a clever one liner for me
+joke	could you give me a clever one liner right now
+joke	could you give me a clever one liner today
+joke	can you give me a clever one liner
+joke	can you give me a clever one liner please
+joke	can you give me a clever one liner for me
+joke	can you give me a clever one liner right now
+joke	can you give me a clever one liner today
+joke	please give me a clever one liner
+joke	please give me a clever one liner please
+joke	please give me a clever one liner for me
+joke	please give me a clever one liner right now
+joke	please give me a clever one liner today
+joke	make me laugh with a silly joke
+joke	make me laugh with a silly joke please
+joke	make me laugh with a silly joke for me
+joke	make me laugh with a silly joke right now
+joke	make me laugh with a silly joke today
+joke	hey make me laugh with a silly joke
+joke	hey make me laugh with a silly joke please
+joke	hey make me laugh with a silly joke for me
+joke	hey make me laugh with a silly joke right now
+joke	hey make me laugh with a silly joke today
+joke	hi make me laugh with a silly joke
+joke	hi make me laugh with a silly joke please
+joke	hi make me laugh with a silly joke for me
+joke	hi make me laugh with a silly joke right now
+joke	hi make me laugh with a silly joke today
+joke	hello make me laugh with a silly joke
+joke	hello make me laugh with a silly joke please
+joke	hello make me laugh with a silly joke for me
+joke	hello make me laugh with a silly joke right now
+joke	hello make me laugh with a silly joke today
+joke	could you make me laugh with a silly joke
+joke	could you make me laugh with a silly joke please
+joke	could you make me laugh with a silly joke for me
+joke	could you make me laugh with a silly joke right now
+joke	could you make me laugh with a silly joke today
+joke	can you make me laugh with a silly joke
+joke	can you make me laugh with a silly joke please
+joke	can you make me laugh with a silly joke for me
+joke	can you make me laugh with a silly joke right now
+joke	can you make me laugh with a silly joke today
+joke	please make me laugh with a silly joke
+joke	please make me laugh with a silly joke please
+joke	please make me laugh with a silly joke for me
+joke	please make me laugh with a silly joke right now
+joke	please make me laugh with a silly joke today
+weather	tell me if I need an umbrella
+weather	tell me if I need an umbrella please
+weather	tell me if I need an umbrella for me
+weather	tell me if I need an umbrella right now
+weather	tell me if I need an umbrella today
+weather	hey tell me if I need an umbrella
+weather	hey tell me if I need an umbrella please
+weather	hey tell me if I need an umbrella for me
+weather	hey tell me if I need an umbrella right now
+weather	hey tell me if I need an umbrella today
+weather	hi tell me if I need an umbrella
+weather	hi tell me if I need an umbrella please
+weather	hi tell me if I need an umbrella for me
+weather	hi tell me if I need an umbrella right now
+weather	hi tell me if I need an umbrella today
+weather	hello tell me if I need an umbrella
+weather	hello tell me if I need an umbrella please
+weather	hello tell me if I need an umbrella for me
+weather	hello tell me if I need an umbrella right now
+weather	hello tell me if I need an umbrella today
+weather	could you tell me if I need an umbrella
+weather	could you tell me if I need an umbrella please
+weather	could you tell me if I need an umbrella for me
+weather	could you tell me if I need an umbrella right now
+weather	could you tell me if I need an umbrella today
+weather	can you tell me if I need an umbrella
+weather	can you tell me if I need an umbrella please
+weather	can you tell me if I need an umbrella for me
+weather	can you tell me if I need an umbrella right now
+weather	can you tell me if I need an umbrella today
+weather	please tell me if I need an umbrella
+weather	please tell me if I need an umbrella please
+weather	please tell me if I need an umbrella for me
+weather	please tell me if I need an umbrella right now
+weather	please tell me if I need an umbrella today
+weather	describe today's weather forecast
+weather	describe today's weather forecast please
+weather	describe today's weather forecast for me
+weather	describe today's weather forecast right now
+weather	describe today's weather forecast today
+weather	hey describe today's weather forecast
+weather	hey describe today's weather forecast please
+weather	hey describe today's weather forecast for me
+weather	hey describe today's weather forecast right now
+weather	hey describe today's weather forecast today
+weather	hi describe today's weather forecast
+weather	hi describe today's weather forecast please
+weather	hi describe today's weather forecast for me
+weather	hi describe today's weather forecast right now
+weather	hi describe today's weather forecast today
+weather	hello describe today's weather forecast
+weather	hello describe today's weather forecast please
+weather	hello describe today's weather forecast for me
+weather	hello describe today's weather forecast right now
+weather	hello describe today's weather forecast today
+weather	could you describe today's weather forecast
+weather	could you describe today's weather forecast please
+weather	could you describe today's weather forecast for me
+weather	could you describe today's weather forecast right now
+weather	could you describe today's weather forecast today
+weather	can you describe today's weather forecast
+weather	can you describe today's weather forecast please
+weather	can you describe today's weather forecast for me
+weather	can you describe today's weather forecast right now
+weather	can you describe today's weather forecast today
+weather	please describe today's weather forecast
+weather	please describe today's weather forecast please
+weather	please describe today's weather forecast for me
+weather	please describe today's weather forecast right now
+weather	please describe today's weather forecast today
+weather	tell me if it might snow
+weather	tell me if it might snow please
+weather	tell me if it might snow for me
+weather	tell me if it might snow right now
+weather	tell me if it might snow today
+weather	hey tell me if it might snow
+weather	hey tell me if it might snow please
+weather	hey tell me if it might snow for me
+weather	hey tell me if it might snow right now
+weather	hey tell me if it might snow today
+weather	hi tell me if it might snow
+weather	hi tell me if it might snow please
+weather	hi tell me if it might snow for me
+weather	hi tell me if it might snow right now
+weather	hi tell me if it might snow today
+weather	hello tell me if it might snow
+weather	hello tell me if it might snow please
+weather	hello tell me if it might snow for me
+weather	hello tell me if it might snow right now
+weather	hello tell me if it might snow today
+weather	could you tell me if it might snow
+weather	could you tell me if it might snow please
+weather	could you tell me if it might snow for me
+weather	could you tell me if it might snow right now
+weather	could you tell me if it might snow today
+weather	can you tell me if it might snow
+weather	can you tell me if it might snow please
+weather	can you tell me if it might snow for me
+weather	can you tell me if it might snow right now
+weather	can you tell me if it might snow today
+weather	please tell me if it might snow
+weather	please tell me if it might snow please
+weather	please tell me if it might snow for me
+weather	please tell me if it might snow right now
+weather	please tell me if it might snow today
+weather	give me the weather outlook
+weather	give me the weather outlook please
+weather	give me the weather outlook for me
+weather	give me the weather outlook right now
+weather	give me the weather outlook today
+weather	hey give me the weather outlook
+weather	hey give me the weather outlook please
+weather	hey give me the weather outlook for me
+weather	hey give me the weather outlook right now
+weather	hey give me the weather outlook today
+weather	hi give me the weather outlook
+weather	hi give me the weather outlook please
+weather	hi give me the weather outlook for me
+weather	hi give me the weather outlook right now
+weather	hi give me the weather outlook today
+weather	hello give me the weather outlook
+weather	hello give me the weather outlook please
+weather	hello give me the weather outlook for me
+weather	hello give me the weather outlook right now
+weather	hello give me the weather outlook today
+weather	could you give me the weather outlook
+weather	could you give me the weather outlook please
+weather	could you give me the weather outlook for me
+weather	could you give me the weather outlook right now
+weather	could you give me the weather outlook today
+weather	can you give me the weather outlook
+weather	can you give me the weather outlook please
+weather	can you give me the weather outlook for me
+weather	can you give me the weather outlook right now
+weather	can you give me the weather outlook today
+weather	please give me the weather outlook
+weather	please give me the weather outlook please
+weather	please give me the weather outlook for me
+weather	please give me the weather outlook right now
+weather	please give me the weather outlook today
+time_query	tell me the current time
+time_query	tell me the current time please
+time_query	tell me the current time for me
+time_query	tell me the current time right now
+time_query	tell me the current time today
+time_query	hey tell me the current time
+time_query	hey tell me the current time please
+time_query	hey tell me the current time for me
+time_query	hey tell me the current time right now
+time_query	hey tell me the current time today
+time_query	hi tell me the current time
+time_query	hi tell me the current time please
+time_query	hi tell me the current time for me
+time_query	hi tell me the current time right now
+time_query	hi tell me the current time today
+time_query	hello tell me the current time
+time_query	hello tell me the current time please
+time_query	hello tell me the current time for me
+time_query	hello tell me the current time right now
+time_query	hello tell me the current time today
+time_query	could you tell me the current time
+time_query	could you tell me the current time please
+time_query	could you tell me the current time for me
+time_query	could you tell me the current time right now
+time_query	could you tell me the current time today
+time_query	can you tell me the current time
+time_query	can you tell me the current time please
+time_query	can you tell me the current time for me
+time_query	can you tell me the current time right now
+time_query	can you tell me the current time today
+time_query	please tell me the current time
+time_query	please tell me the current time please
+time_query	please tell me the current time for me
+time_query	please tell me the current time right now
+time_query	please tell me the current time today
+time_query	let me know what time it is
+time_query	let me know what time it is please
+time_query	let me know what time it is for me
+time_query	let me know what time it is right now
+time_query	let me know what time it is today
+time_query	hey let me know what time it is
+time_query	hey let me know what time it is please
+time_query	hey let me know what time it is for me
+time_query	hey let me know what time it is right now
+time_query	hey let me know what time it is today
+time_query	hi let me know what time it is
+time_query	hi let me know what time it is please
+time_query	hi let me know what time it is for me
+time_query	hi let me know what time it is right now
+time_query	hi let me know what time it is today
+time_query	hello let me know what time it is
+time_query	hello let me know what time it is please
+time_query	hello let me know what time it is for me
+time_query	hello let me know what time it is right now
+time_query	hello let me know what time it is today
+time_query	could you let me know what time it is
+time_query	could you let me know what time it is please
+time_query	could you let me know what time it is for me
+time_query	could you let me know what time it is right now
+time_query	could you let me know what time it is today
+time_query	can you let me know what time it is
+time_query	can you let me know what time it is please
+time_query	can you let me know what time it is for me
+time_query	can you let me know what time it is right now
+time_query	can you let me know what time it is today
+time_query	please let me know what time it is
+time_query	please let me know what time it is please
+time_query	please let me know what time it is for me
+time_query	please let me know what time it is right now
+time_query	please let me know what time it is today
+time_query	inform me of the exact time now
+time_query	inform me of the exact time now please
+time_query	inform me of the exact time now for me
+time_query	inform me of the exact time now right now
+time_query	inform me of the exact time now today
+time_query	hey inform me of the exact time now
+time_query	hey inform me of the exact time now please
+time_query	hey inform me of the exact time now for me
+time_query	hey inform me of the exact time now right now
+time_query	hey inform me of the exact time now today
+time_query	hi inform me of the exact time now
+time_query	hi inform me of the exact time now please
+time_query	hi inform me of the exact time now for me
+time_query	hi inform me of the exact time now right now
+time_query	hi inform me of the exact time now today
+time_query	hello inform me of the exact time now
+time_query	hello inform me of the exact time now please
+time_query	hello inform me of the exact time now for me
+time_query	hello inform me of the exact time now right now
+time_query	hello inform me of the exact time now today
+
+how_are_you	how are you, be honest
+how_are_you	how are you feeling today
+how_are_you	how are you doing these days
+how_are_you	are you in a good mood right now
+how_are_you	be real, how are you
+
+small_talk_general	let's just talk about random stuff
+small_talk_general	I just want to chat a bit
+small_talk_general	can we have a casual conversation
+small_talk_general	talk with me about anything
+
+daily_routine_chat	I want to tell you about my day
+daily_routine_chat	ask me what I did today
+daily_routine_chat	ask me how my day has been
+
+feelings_mood_checkin	I want to talk about how I'm feeling
+feelings_mood_checkin	check in on my mood
+feelings_mood_checkin	can we talk about my emotions
+
+work_career_chat	I need to vent about my job
+work_career_chat	I want to talk about my career plans
+work_career_chat	work has been stressful lately
+
+school_study_chat	school has been really tiring
+school_study_chat	I want to talk about my classes
+school_study_chat	I'm stressed about my exams
+
+hobbies_daily_chat	I want to talk about my hobbies
+hobbies_daily_chat	ask me what I like to do for fun
+hobbies_daily_chat	let's chat about my interests
+
+travel_itinerary_planner	help me think about a simple weekend trip
+travel_itinerary_planner	plan a short beach trip with me
+travel_itinerary_planner	I want ideas for a cheap vacation
+
+learning_programming_chat	I want advice for learning Python as a beginner
+learning_programming_chat	how should I start learning to code
+learning_programming_chat	I want to improve my programming skills
+
+finance_budgeting	help me create a simple monthly budget
+finance_budgeting	I need tips for not overspending
+finance_budgeting	how can I keep track of my expenses better
+
+finance_saving_plan	I want to save for an emergency fund
+finance_saving_plan	help me plan saving for a vacation
+finance_saving_plan	how can I save more from my salary each month
+
+habit_building_plan	help me build a habit of reading every day
+habit_building_plan	I want to start a regular exercise habit
+habit_building_plan	I want to get into the habit of coding daily
+
+goal_setting_planner	I want to plan goals for this year
+goal_setting_planner	please help me set some study and career goals
+goal_setting_planner	I want to break my long term goals into small steps
+
+family_relationships_chat	I want to talk about my family
+family_relationships_chat	things with my parents have been complicated
+family_relationships_chat	I want to share something about my family life
+
+friends_social_chat	I want to talk about my friends
+friends_social_chat	my social life has been weird lately
+friends_social_chat	I want to talk about making new friends
+
+feelings_mood_checkin	I'm not sure how I'm feeling and I want to talk about it
+
+productivity_tips	I keep procrastinating and need help focusing
+productivity_tips	give me ideas to stay productive today
+productivity_tips	help me plan a focused work session
+
+study_habits	I want better study habits
+study_habits	how can I stop cramming the night before exams
+study_habits	give me a simple study plan for this week
+
+sports_discussion	talk with me about football
+sports_discussion	who do you think will win the championship
+sports_discussion	I want to chat about my favorite team
+
+history_questions	tell me something interesting about world history
+history_questions	I want to learn a small history fact
+history_questions	talk about an important event from the past
+
+language_learning	give me motivation to keep learning a new language
+language_learning	how can I practice speaking when I'm alone
+language_learning	I want tips for remembering vocabulary
+
+joke	tell me a random joke
+joke	I need something funny to cheer me up
+joke	make me laugh with a silly joke
+
+play_game	let's play some kind of game
+play_game	I feel bored, can you start a game
+play_game	suggest a quick game we can play in chat
+
+random_question	tell me a random fact about anything
+random_question	surprise me with an interesting question
+random_question	ask me something fun and unexpected
+
+emotion_support	I'm feeling down and just want some support
+emotion_support	I don't need advice, I just want you to listen
+emotion_support	can you comfort me a bit
+
+music_talk	let's talk about music
+music_talk	ask me about my favorite songs
+music_talk	I want to chat about bands and artists
+
+food_talk	I want to talk about food
+food_talk	ask me about my favorite dishes
+food_talk	let's chat about snacks and meals
+
+technology_talk	I want to talk about tech and gadgets
+technology_talk	ask me about my favorite devices
+technology_talk	let's chat about new technology trends
