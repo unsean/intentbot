@@ -33,6 +33,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 
+import tools
 from generative import (
     UNK,
     GenTrainResult,
@@ -50,6 +51,7 @@ DEFAULT_INTENTS_PATH = DATA_DIR / "intents.json"
 EXTRA_INTENTS_PATHS = [
     DATA_DIR / "intents_extra.json",
     DATA_DIR / "intents_topics.json",
+    DATA_DIR / "intents_tools.json",
 ]
 DEFAULT_EXTRA_TRAINING = DATA_DIR / "train.txt"
 MODEL_PATH = ROOT / "enhanced_model.pth"
@@ -484,10 +486,6 @@ def get_date() -> str:
     return f"Today's date is {datetime.now().strftime('%Y-%m-%d')}"
 
 
-def get_weather() -> str:
-    return "It's sunny with a few clouds today."
-
-
 JOKES = [
     "Why don't scientists trust atoms? Because they make up everything!",
     "I told my wife she was drawing her eyebrows too high. She looked surprised!",
@@ -834,7 +832,11 @@ def looks_like_math(text: str) -> bool:
 EXTENSION_FUNCTIONS: Dict[str, Callable] = {
     "get_time": get_time,
     "get_date": get_date,
-    "get_weather": get_weather,
+    "get_weather": tools.get_weather,
+    "extensions.tools.webSearch": tools.web_search,
+    "extensions.tools.wikiLookup": tools.wiki_lookup,
+    "extensions.tools.cryptoPrice": tools.crypto_price,
+    "extensions.tools.dateTime": tools.datetime_info,
     "get_joke": get_joke,
     "extensions.math.calculate": calculate_math,
     "extensions.games.startGame": start_game,
@@ -866,6 +868,11 @@ EXTENSION_ARG_SOURCE: Dict[str, str] = {
     "extensions.translate.translate": "message",
     "extensions.gHumans.updateHuman": "user_name",
     "extensions.names.setAIName": "ai_name",
+    "get_weather": "message",
+    "extensions.tools.webSearch": "message",
+    "extensions.tools.wikiLookup": "message",
+    "extensions.tools.cryptoPrice": "message",
+    "extensions.tools.dateTime": "message",
 }
 
 
@@ -912,6 +919,32 @@ AI_NAME_PATTERNS = [
     r"be called|change your name to|rename yourself(?: to)?|i'?ll name you|"
     r"name yourself|your new name is)\s+([A-Za-z][A-Za-z'-]*)",
 ]
+
+# Explicit tool commands — high-precision triggers, run before the classifier.
+_TOOL_SEARCH_RE = re.compile(
+    r"^(?:search|google|look ?up|find|cari)\s+"
+    r"(?:for\s+|about\s+|info(?:rmation)?\s+(?:on|about)\s+|tentang\s+)?(.+?)\s*[?.!]*$",
+    re.IGNORECASE,
+)
+_TOOL_WIKI_RE = re.compile(r"^(?:wiki|wikipedia)\s+(.+)", re.IGNORECASE)
+_TOOL_WEATHER_RE = re.compile(
+    r"\bweather\s+(?:in|at|for|like|today|forecast|report)|"
+    r"(?:what'?s|how'?s|check)\s+(?:the\s+)?weather|\bcuaca\b",
+    re.IGNORECASE,
+)
+_TOOL_CRYPTO_RE = re.compile(
+    r"(?:price of|berapa harga|harga|how much (?:is|does))\s+[a-z]+|"
+    r"\b(?:btc|bitcoin|eth|ethereum|doge|dogecoin|sol|solana|bnb|xrp|ada|"
+    r"cardano|ltc|litecoin|usdt|tether|dot|polkadot|link|matic|polygon)"
+    r"\s+price\b",
+    re.IGNORECASE,
+)
+_TOOL_DATETIME_RE = re.compile(
+    r"what(?:'s| is) the time|what time is it|current time|"
+    r"what(?:'s| is) (?:the |today'?s )?date|what day is (?:it|today)|"
+    r"jam berapa|hari apa|tanggal berapa",
+    re.IGNORECASE,
+)
 
 GREETING_PHRASES = {
     "hi", "hello", "hey", "hi there", "hello there", "hey there",
@@ -990,6 +1023,8 @@ DYNAMIC_INTENTS = {
     "name_setup", "name_query", "ai_name_setup", "ai_name_setting",
     "user_name_setting", "name_introduction", "bot_name_query",
     "reset", "help", "generative", "followup", "empty", "fallback",
+    "web_search", "wiki_lookup", "crypto_price", "datetime_query",
+    "weather",
 }
 
 
@@ -1618,6 +1653,12 @@ class ChatAssistant:
             text = calculate_math(message)
             return self._finalize(message, text, "math_question", 1.0, {}, user_id)
 
+        # 4b. Explicit tool commands (web search, weather, wiki, crypto, datetime)
+        tool = self._detect_tool_call(message)
+        if tool is not None:
+            intent_tag, text = tool
+            return self._finalize(message, text, intent_tag, 1.0, {}, user_id)
+
         # 5. Follow-up requests ("another", "more", "again")
         if lower.split()[0] in FOLLOWUP_TRIGGERS or lower in FOLLOWUP_TRIGGERS:
             if self.generative_all and self.generative_ready:
@@ -1710,6 +1751,23 @@ class ChatAssistant:
                 name = match.group(1)
                 if name.lower() not in _NAME_BLOCKLIST:
                     return name
+        return None
+
+    def _detect_tool_call(self, message: str) -> Optional[Tuple[str, str]]:
+        """Explicit tool commands — deterministic, checked before the
+        classifier so 'search X' never gets misrouted."""
+        lower = message.strip().lower()
+        m = _TOOL_SEARCH_RE.match(lower)
+        if m and len(m.group(1)) > 1:
+            return "web_search", tools.web_search(message)
+        if _TOOL_WIKI_RE.match(lower):
+            return "wiki_lookup", tools.wiki_lookup(message)
+        if _TOOL_WEATHER_RE.search(lower):
+            return "weather", tools.get_weather(message)
+        if _TOOL_CRYPTO_RE.search(lower):
+            return "crypto_price", tools.crypto_price(message)
+        if _TOOL_DATETIME_RE.search(lower):
+            return "datetime_query", tools.datetime_info(message)
         return None
 
     def _is_bot_name_query(self, lower: str) -> bool:

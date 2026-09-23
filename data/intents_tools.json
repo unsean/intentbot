@@ -1,0 +1,122 @@
+{
+ "intents": [
+  {
+   "intent": "web_search",
+   "text": [
+    "search for this",
+    "search the web",
+    "google something for me",
+    "look this up",
+    "look up a topic",
+    "find information about something",
+    "can you search the internet",
+    "search online for me",
+    "do a web search",
+    "find out about a topic",
+    "search it online",
+    "browse the web for me",
+    "look it up online",
+    "find me info",
+    "can you google that",
+    "cari di internet",
+    "cariin dong",
+    "cari tau dong",
+    "googling dong",
+    "tolong carikan"
+   ],
+   "responses": [
+    "What should I search for? Try 'search for black holes'.",
+    "Tell me what to look up and I'll search it."
+   ],
+   "context": [],
+   "entities": [],
+   "extension": {"function": "extensions.tools.webSearch"}
+  },
+  {
+   "intent": "wiki_lookup",
+   "text": [
+    "wikipedia search",
+    "check wikipedia",
+    "wiki it",
+    "look on wikipedia",
+    "what does wikipedia say",
+    "wikipedia article about something",
+    "read me the wikipedia page",
+    "pull up wikipedia",
+    "get the wiki entry",
+    "encyclopedia lookup",
+    "summarize from wikipedia",
+    "cari di wikipedia",
+    "buka wikipedia"
+   ],
+   "responses": [
+    "What topic? Try 'wikipedia Albert Einstein'.",
+    "Give me a topic and I'll pull the Wikipedia summary."
+   ],
+   "context": [],
+   "entities": [],
+   "extension": {"function": "extensions.tools.wikiLookup"}
+  },
+  {
+   "intent": "crypto_price",
+   "text": [
+    "bitcoin price",
+    "price of bitcoin",
+    "how much is ethereum",
+    "eth price",
+    "check btc price",
+    "what is the price of dogecoin",
+    "crypto price check",
+    "how much is btc right now",
+    "solana price",
+    "check crypto prices",
+    "price of eth",
+    "how much does bitcoin cost",
+    "current bitcoin price",
+    "berapa harga bitcoin",
+    "harga btc sekarang",
+    "harga ethereum",
+    "cek harga kripto",
+    "kripto hari ini"
+   ],
+   "responses": [
+    "Which coin? Try 'bitcoin price' or 'price of ethereum'.",
+    "Tell me the coin - like 'btc price'."
+   ],
+   "context": [],
+   "entities": [],
+   "extension": {"function": "extensions.tools.cryptoPrice"}
+  },
+  {
+   "intent": "datetime_query",
+   "text": [
+    "what time is it",
+    "what's the time",
+    "what is the date today",
+    "what day is it",
+    "what day is today",
+    "what's today's date",
+    "tell me the date",
+    "what is today",
+    "current date and time",
+    "what time is it now",
+    "date and time please",
+    "which day is it",
+    "jam berapa",
+    "jam berapa sekarang",
+    "hari apa ini",
+    "hari apa sekarang",
+    "tanggal berapa",
+    "sekarang tanggal berapa",
+    "ini hari apa"
+   ],
+   "responses": [
+    "Let me check the clock for you.",
+    "One sec, checking the date."
+   ],
+   "context": [],
+   "entities": [],
+   "extension": {"function": "extensions.tools.dateTime"}
+  }
+ ]
+}

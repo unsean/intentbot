@@ -9,6 +9,17 @@ A chatbot built from scratch with PyTorch. Two models work together:
 Deterministic rules handle math, games, and remembering your name — a small
 model can't compute those, so we don't ask it to.
 
+## Tools (real, live)
+
+- `search for X` / `cari X` — DuckDuckGo instant answers, Wikipedia fallback
+- `wikipedia X` — article summaries
+- `weather in X` / `cuaca di X` — real conditions via Open-Meteo
+- `bitcoin price` / `berapa harga eth` — live prices via CoinGecko
+- `what time is it` / `jam berapa` — real date & time
+
+All free APIs, no keys needed. Tool commands run deterministically so they
+always hit the right function.
+
 ## Run it
 
 ```bash
@@ -45,11 +56,13 @@ Generated replies stream token-by-token in both the CLI and the web UI.
 ```
 main.py                  # assistant logic, classifier, CLI
 generative.py            # transformer: vocab, training, beam search, streaming
+tools.py                 # live tools: search, wikipedia, weather, crypto, time
 web.py                   # Flask app (POST /chat, SSE /chat/stream, /status)
 templates/index.html     # dark web UI with live streaming
 data/intents.json        # core intents
 data/intents_extra.json  # casual chat (idk, lol, wyd, ...)
 data/intents_topics.json # deeper topics + Indonesian casual
+data/intents_tools.json  # tool intents (search, weather, crypto, datetime)
 data/train.txt           # extra labelled examples
 scripts/                 # dataset utilities
 tests/                   # pytest suite
