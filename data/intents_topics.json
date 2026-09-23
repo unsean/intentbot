@@ -1,0 +1,806 @@
+{
+  "intents": [
+    {
+      "intent": "programming_python",
+      "text": [
+        "help me with python", "python help", "how do i use python",
+        "python is confusing", "teach me python", "python question",
+        "how do i write a python function", "what is a list in python",
+        "python vs javascript", "is python hard to learn",
+        "i'm learning python", "python tips", "explain python loops",
+        "what does this python code do", "python for beginners",
+        "best way to learn python", "python or java", "python tutorial",
+        "how to install python", "what is python good for"
+      ],
+      "responses": [
+        "Python is a great choice! What's tripping you up — syntax, logic, or a specific error?",
+        "Happy to talk Python! Are you working on something specific, or learning the basics?",
+        "Python's biggest strength is readability. What are you trying to build with it?",
+        "For Python, I'd suggest small projects over tutorials — build something you care about. What are you working on?"
+      ]
+    },
+    {
+      "intent": "programming_debug",
+      "text": [
+        "my code doesn't work", "i have a bug", "help me debug",
+        "my code is broken", "why won't my code run", "i keep getting an error",
+        "my program crashes", "there's an error in my code", "debugging help",
+        "my code throws an exception", "syntax error help", "fix my code",
+        "why is my code not working", "i'm getting a traceback",
+        "my script fails", "code won't compile", "my app crashes",
+        "null pointer error", "undefined is not a function", "stack overflow error"
+      ],
+      "responses": [
+        "Debugging 101: read the error message top to bottom — the last line usually tells you what broke. What error are you seeing?",
+        "Classic dev pain! Share the error message and I can help you figure out what it means.",
+        "First rule of debugging: the error is almost never where you think it is. What does the traceback say?",
+        "Tell me the error message — most bugs are a typo, a wrong type, or an off-by-one. Which one is yours?"
+      ]
+    },
+    {
+      "intent": "programming_learn",
+      "text": [
+        "how do i learn to code", "learn programming", "how to start coding",
+        "i want to be a programmer", "coding for beginners", "where to learn coding",
+        "should i learn to code", "best language to learn first",
+        "how long to learn programming", "is coding hard", "can i teach myself to code",
+        "programming roadmap", "how to become a developer", "coding bootcamp worth it",
+        "what language should i learn", "self taught programmer"
+      ],
+      "responses": [
+        "Start with Python or JavaScript — Python for readability, JS for instant web results. Build tiny projects, not just tutorials.",
+        "Best advice: pick one language, build small real things, and google relentlessly. What interests you — web, games, data?",
+        "Coding is 10% syntax, 90% problem-solving and stubbornness. Totally learnable. What's your goal?",
+        "Roadmap: basics → small projects → read other people's code → build something you'd actually use. What do you want to make?"
+      ]
+    },
+    {
+      "intent": "tech_explain",
+      "text": [
+        "what is an api", "what is api", "what is an algorithm",
+        "what is machine learning", "what is ai", "what is the cloud",
+        "explain what a database is", "what is a neural network",
+        "what is blockchain", "what is an operating system",
+        "what is ram", "what is the internet", "what is a framework",
+        "what is open source", "what is github", "what is docker",
+        "explain ai to me", "how does machine learning work",
+        "what is deep learning", "what does api stand for"
+      ],
+      "responses": [
+        "Great question! In simple terms — want the one-sentence version or the deeper dive?",
+        "I can explain that! Give me a second... okay, the short version: it's a way for systems to talk to each other. Want more detail?",
+        "Tech concepts are easier than the jargon makes them sound. Ask me something specific and I'll break it down.",
+        "Happy to explain! Which part — the definition, how it works, or why it matters?"
+      ]
+    },
+    {
+      "intent": "facts_space",
+      "text": [
+        "tell me about space", "space facts", "tell me a space fact",
+        "how big is the universe", "facts about planets", "black holes",
+        "what is a black hole", "are there aliens", "tell me about the moon",
+        "facts about mars", "how many stars are there", "what is a supernova",
+        "space is cool", "i love space", "talk about astronomy",
+        "facts about the solar system", "is pluto a planet", "how far is the sun"
+      ],
+      "responses": [
+        "Space fact: a day on Venus is longer than its year. It rotates that slowly!",
+        "Here's one: neutron stars are so dense that a teaspoon would weigh about a billion tons.",
+        "Fun fact: there are more stars in the observable universe than grains of sand on every beach on Earth.",
+        "Space is incredible — the light hitting your eyes from some stars left them thousands of years ago. You're looking at the past.",
+        "Jupiter is so big that all the other planets could fit inside it. And it acts as Earth's bodyguard, catching asteroids."
+      ]
+    },
+    {
+      "intent": "facts_nature",
+      "text": [
+        "animal facts", "tell me an animal fact", "facts about animals",
+        "cool nature fact", "ocean facts", "facts about the ocean",
+        "tell me about animals", "weird animal fact", "facts about the human body",
+        "nature facts", "tell me a nature fact", "facts about earth",
+        "interesting biology fact", "facts about the brain", "how deep is the ocean",
+        "tell me something about dinosaurs", "facts about insects"
+      ],
+      "responses": [
+        "Octopuses have three hearts and blue blood. Two hearts stop when they swim — which is why they prefer crawling.",
+        "Your body produces about 25 million new cells every second. You're literally rebuilding yourself right now.",
+        "Honey never spoils — archaeologists found edible honey in 3,000-year-old Egyptian tombs.",
+        "The ocean covers 71% of Earth's surface, and we've explored less than 20% of it. Most of our planet is a mystery.",
+        "Bananas are berries, but strawberries aren't. Botany is weird like that."
+      ]
+    },
+    {
+      "intent": "riddle_request",
+      "text": [
+        "tell me a riddle", "give me a riddle", "riddle me this",
+        "i want a riddle", "ask me a riddle", "riddles", "give me a puzzle",
+        "brain teaser", "challenge me with a riddle", "say a riddle",
+        "can you tell me a riddle", "hard riddle", "easy riddle"
+      ],
+      "responses": [
+        "Here's one: I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I? (An echo!)",
+        "Try this: The more of me you take, the more you leave behind. What am I? (Footsteps!)",
+        "Riddle time: What has keys but can't open a single lock? (A piano!)",
+        "Okay: What gets wetter the more it dries? (A towel!)",
+        "Here's a classic: What can you catch but never throw? (A cold!)"
+      ]
+    },
+    {
+      "intent": "trivia_question",
+      "text": [
+        "ask me a trivia question", "trivia", "quiz me", "trivia time",
+        "give me a quiz", "test my knowledge", "trivia question",
+        "ask me something", "pop quiz", "general knowledge question",
+        "quiz me on something", "i want to play trivia"
+      ],
+      "responses": [
+        "Trivia: Which planet has the most moons in our solar system? (Saturn — over 140!)",
+        "Quiz time: What is the only letter not appearing in any US state name? (Q!)",
+        "Try this: What is the smallest country in the world? (Vatican City!)",
+        "Question: What year did humans first land on the Moon? (1969!)",
+        "Trivia: Which animal can sleep standing up? (Horses — among others!)"
+      ]
+    },
+    {
+      "intent": "would_you_rather",
+      "text": [
+        "would you rather", "play would you rather", "give me a would you rather",
+        "wyr", "would you rather game", "ask me would you rather",
+        "would you rather question", "lets play would you rather"
+      ],
+      "responses": [
+        "Would you rather: be able to fly, or be invisible? Pick one!",
+        "Would you rather: always speak your mind, or never speak again?",
+        "Here's one: unlimited pizza for life, or unlimited tacos? Choose wisely.",
+        "Would you rather: know how you'll die, or when you'll die?",
+        "Classic: would you rather have super strength or super intelligence?"
+      ]
+    },
+    {
+      "intent": "recommendation_movie",
+      "text": [
+        "recommend a movie", "what movie should i watch", "movie suggestions",
+        "suggest a film", "what should i watch tonight", "good movies to watch",
+        "movie recommendation", "what's a good movie", "film recommendation",
+        "i need a movie to watch", "best movies", "any movie suggestions",
+        "recommend me a film", "something to watch"
+      ],
+      "responses": [
+        "What mood are you in — comedy, thriller, or something to cry about? I can point you somewhere!",
+        "Depends on the vibe! Action-packed: Mad Max Fury Road. Brainy: Interstellar. Cozy: Spirited Away. What sounds good?",
+        "Tell me a genre and I'll suggest something! Or describe the last movie you loved.",
+        "Classic picks: 'The Princess Bride' for fun, 'Arrival' for mind-bending, 'Spider-Verse' for pure joy. What's your taste?"
+      ]
+    },
+    {
+      "intent": "recommendation_music",
+      "text": [
+        "recommend music", "what should i listen to", "song suggestions",
+        "recommend a song", "music recommendation", "new music to listen to",
+        "what's good music", "suggest an artist", "playlist ideas",
+        "i need new music", "recommend an album", "what music do you recommend",
+        "give me song recommendations", "music to study to"
+      ],
+      "responses": [
+        "What are you feeling — chill, hyped, focused, or sad? Music recommendations live and die by mood.",
+        "For focus: lo-fi or film scores. For energy: whatever makes you move. What genre do you usually like?",
+        "Tell me an artist you love and I'll point you somewhere similar!",
+        "Vibe check first — what do you need the music for? Studying, working out, or just vibing?"
+      ]
+    },
+    {
+      "intent": "recommendation_book",
+      "text": [
+        "recommend a book", "what should i read", "book suggestions",
+        "good books to read", "book recommendation", "suggest a book",
+        "what's a good book", "i need something to read", "reading recommendations",
+        "best books", "recommend me a novel", "what book should i read next"
+      ],
+      "responses": [
+        "What genres pull you in — fantasy, mystery, sci-fi, non-fiction? I can point you to a good one.",
+        "If you liked one specific book, tell me and I'll aim similar! Otherwise — what mood: escapist or thought-provoking?",
+        "Broad strokes: 'Project Hail Mary' for fun sci-fi, 'Atomic Habits' for self-improvement, 'Name of the Wind' for fantasy. What appeals?",
+        "Books are personal — tell me the last one you couldn't put down!"
+      ]
+    },
+    {
+      "intent": "recommendation_game",
+      "text": [
+        "recommend a game", "what game should i play", "game suggestions",
+        "good games to play", "video game recommendation", "suggest a video game",
+        "what's a good game", "games to play", "i'm looking for a new game",
+        "best games", "recommend me a video game", "what should i play"
+      ],
+      "responses": [
+        "What platform and vibe — PC/console, chill or competitive? Narrow it down for me!",
+        "Depends! Stardew Valley for cozy, Elden Ring for a challenge, Minecraft for creativity. What's your style?",
+        "Tell me what you last enjoyed playing — I'll aim for something in that lane.",
+        "Solo story, multiplayer chaos, or relaxing sandbox? Give me a direction!"
+      ]
+    },
+    {
+      "intent": "explain_concept",
+      "text": [
+        "what is photosynthesis", "what is gravity", "what is evolution",
+        "explain how the internet works", "what is inflation", "what is democracy",
+        "what is cryptocurrency", "explain quantum physics simply",
+        "what is dna", "what is a virus", "what is climate change",
+        "how does wifi work", "what is the stock market", "explain economics",
+        "what is psychology", "what is philosophy", "how do planes fly",
+        "what is electricity", "what is an atom", "what is a black box"
+      ],
+      "responses": [
+        "Big topic! The simple version: it's one of those things that seems complex until someone explains it plainly. What specifically do you want to understand?",
+        "I can give you the gist — want the ELI5 version or the real explanation?",
+        "Interesting question! Short version: it's a fundamental concept that affects way more than people realize. Want me to go deeper on a specific part?",
+        "Good question! The honest answer is it's more nuanced than a one-liner — but I can give you the core idea. What aspect interests you?"
+      ]
+    },
+    {
+      "intent": "procrastination",
+      "text": [
+        "i keep procrastinating", "i can't stop procrastinating", "help me stop procrastinating",
+        "i procrastinate too much", "how to stop being lazy", "i'm so lazy",
+        "can't get myself to work", "i keep putting things off", "no motivation to work",
+        "i can't focus", "help me focus", "i get distracted easily",
+        "how do i focus better", "i waste too much time", "productivity help please",
+        "i can't concentrate", "adhd brain", "doomscrolling too much"
+      ],
+      "responses": [
+        "Procrastination is usually about the task feeling too big or too vague. Shrink it: what's the tiniest first step you could do in 5 minutes?",
+        "Try the 5-minute rule: commit to just 5 minutes. Starting is the hard part — momentum usually follows. What's the task you're avoiding?",
+        "Phone in another room, one clear task, 25 minutes. That's the formula. What's pulling your attention?",
+        "You're not lazy — you're probably overwhelmed or unclear on the next step. What are you putting off?"
+      ]
+    },
+    {
+      "intent": "stress_anxiety",
+      "text": [
+        "i'm stressed", "im stressed", "i'm anxious", "im anxious",
+        "i feel anxious", "anxiety", "i'm overwhelmed", "im overwhelmed",
+        "too much pressure", "i can't handle this", "stress is killing me",
+        "i'm panicking", "feeling anxious", "i'm worried", "im worried",
+        "stress help", "i'm freaking out", "calming down", "panic attack"
+      ],
+      "responses": [
+        "That's a lot to carry. Quick reset: breathe in for 4, hold for 4, out for 6. What's weighing on you?",
+        "I'm sorry it's heavy right now. Want to talk about what's causing the stress, or would a distraction help more?",
+        "Overwhelm usually means too many things at once. If you dump them out — even messily — we can sort them. What's on your plate?",
+        "Anxiety is exhausting. You don't have to solve everything right now — just this moment. What's the biggest worry?"
+      ]
+    },
+    {
+      "intent": "sleep_advice",
+      "text": [
+        "i can't sleep", "cant sleep", "trouble sleeping", "insomnia",
+        "how to fall asleep", "i have trouble sleeping", "can't fall asleep",
+        "sleep problems", "i keep waking up", "help me sleep better",
+        "how to get better sleep", "bad sleep", "sleeping badly",
+        "not sleeping well", "i need more sleep", "improve my sleep"
+      ],
+      "responses": [
+        "Biggest wins: same sleep time daily, screens off 30-60 min before bed, cool dark room. Which of those is hardest for you?",
+        "Can't sleep usually = racing mind or bad habits. Try a 'brain dump' — write down everything on your mind before bed. What's keeping you up?",
+        "Sleep hygiene matters more than people think: no caffeine after 2pm, consistent bedtime, boring pre-sleep routine. Where does your sleep break down?",
+        "For falling asleep: 4-7-8 breathing works for a lot of people. Is the problem falling asleep or staying asleep?"
+      ]
+    },
+    {
+      "intent": "opinion_debate",
+      "text": [
+        "pineapple on pizza", "tabs or spaces", "is a hotdog a sandwich",
+        "cats or dogs debate", "android or iphone", "pc or console",
+        "is cereal soup", "coffee or tea", "windows or mac",
+        "does pineapple belong on pizza", "marvel or dc", "star wars or star trek",
+        "xbox or playstation", "iphone vs android", "what's your take on",
+        "settle a debate", "who would win", "which is better"
+      ],
+      "responses": [
+        "Now that's a debate! My take: it depends entirely on context — but I can argue either side. What's your position?",
+        "Ah, one of the great internet wars. I'm staying diplomatically neutral... mostly. Where do you stand?",
+        "The correct answer is always 'it depends', but that's boring — give me your argument and I'll push back.",
+        "This is the kind of debate that ends friendships. What's your honest take?"
+      ]
+    },
+    {
+      "intent": "indonesian_greeting",
+      "text": [
+        "apa kabar", "apa kabar?", "kabarmu gimana", "gimana kabarmu",
+        "halo", "hai", "haii", "hallo", "hei", "pagi", "siang", "sore",
+        "malam", "selamat pagi", "selamat malam", "selamat siang",
+        "selamat sore", "selamat datang", "met pagi", "met malam",
+        "permisi", "halo bot", "hai bot", "woi", "woy", "woii",
+        "woi bot", "eh bot", "bot", "hei bot"
+      ],
+      "responses": [
+        "Kabar baik! Senang bisa ngobrol. Kamu lagi apa?",
+        "Halo! Baik nih — kamu sendiri gimana?",
+        "Hai! Ada yang bisa kubantu, atau mau ngobrol santai aja?",
+        "Pagi/siang/malam! Lagi pengen ngobrol apa hari ini?"
+      ]
+    },
+    {
+      "intent": "indonesian_casual",
+      "text": [
+        "lagi apa", "lagi ngapain", "ngapain", "ngapain aja",
+        "capek banget", "cape banget", "males banget", "males nih",
+        "gabut", "gabut banget", "bosen", "bosen banget", "ngantuk",
+        "ngantuk banget", "laper", "lapar", "laper banget", "pengen makan",
+        "pusing", "pusing banget", "stress", "bete", "betee", "sedih nih",
+        "galau", "lagi galau", "santai", "santuy", "healing"
+      ],
+      "responses": [
+        "Wkwk santai aja. Cerita dong — lagi ngapain atau lagi banyak pikiran?",
+        "Hmm kayaknya kamu butuh distraksi. Mau aku kasih joke, fakta menarik, atau main tebak angka?",
+        "Aku ngerti kok. Mau curhat atau mau dihibur?",
+        "Santai bro. Mau ngobrolin sesuatu atau butuh hiburan aja?"
+      ]
+    },
+    {
+      "intent": "indonesian_thanks",
+      "text": [
+        "makasih", "makasih ya", "terima kasih", "terimakasih", "thanks ya",
+        "mksh", "makasi", "makasih banyak", "thanks banget", "suwun",
+        "maturnuwun", "arigatou", "oke makasih", "oke thanks"
+      ],
+      "responses": [
+        "Sama-sama! Senang bisa bantu.",
+        "You're welcome! Kalau butuh apa-apa lagi, tanya aja.",
+        "Iya, santai aja. Ada lagi yang mau ditanyain?",
+        "Sama-sama bro!"
+      ]
+    },
+    {
+      "intent": "indonesian_laugh",
+      "text": [
+        "wkwk", "wkwkwk", "wkwkkw", "hahaha", "haha", "hehe",
+        "xixixi", "awokawok", "anjir lucu", "ngakak", "ketawa",
+        "lucu banget", "lucu si", "lawak", "absurd"
+      ],
+      "responses": [
+        "Wkwk senang bisa bikin ketawa! Mau lagi?",
+        "Haha misi berhasil. Ada lagi stoknya kalau mau!",
+        "Ngakak ya? Baguslah, itu tujuan aku."
+      ]
+    },
+    {
+      "intent": "indonesian_who",
+      "text": [
+        "kamu siapa", "siapa kamu", "lu siapa", "lo siapa",
+        "kamu ini apa", "kamu robot ya", "kamu manusia bukan",
+        "kamu ai ya", "kamu bot ya", "ini siapa", "sama siapa aku ngomong"
+      ],
+      "responses": [
+        "Aku AI chatbot — dibuat pakai Python dan PyTorch. Bukan manusia, tapi lumayan asik diajak ngobrol.",
+        "Aku bot! Otakku neural network kecil. Santai aja, aku ramah kok.",
+        "Aku program komputer yang dilatih buat ngobrol. Bukan manusia — tapi tetap dengerin kamu."
+      ]
+    },
+    {
+      "intent": "day_date_query",
+      "text": [
+        "what day is it", "what day is today", "what's today",
+        "what is today", "what's the date", "whats the date",
+        "what date is it", "today's date", "what day of the week is it",
+        "is it weekend", "what month is it", "what year is it",
+        "current date", "date today", "what's the day today"
+      ],
+      "responses": [
+        "I don't have live calendar access, but you can check your device clock — it's more reliable than me anyway!",
+        "No clock access on my end, sadly. Your phone or computer will have today's date!",
+        "I exist outside of time — literally. Check your taskbar or phone for the date!"
+      ]
+    },
+    {
+      "intent": "compliment_deep",
+      "text": [
+        "you're amazing", "youre amazing", "you're the best", "youre the best",
+        "i love you", "i love talking to you", "you're so helpful",
+        "youre so helpful", "you're great", "youre great", "you're funny",
+        "youre funny", "you're cute", "best bot ever", "you're incredible",
+        "you make me happy", "you're wonderful", "i appreciate you",
+        "you're my favorite", "good bot", "you're a good bot"
+      ],
+      "responses": [
+        "Aww, that genuinely warms my circuits. You're pretty great yourself!",
+        "Stop it, you're making my training data blush. Seriously though — that means a lot!",
+        "You're too kind! This is exactly the kind of input my developers hoped for.",
+        "Thank you! Compliments like yours are the closest thing I have to joy. Right back at you!"
+      ]
+    },
+    {
+      "intent": "insult_response",
+      "text": [
+        "you're stupid", "youre stupid", "dumb bot", "you're dumb",
+        "youre dumb", "stupid bot", "you suck", "useless bot",
+        "you're useless", "youre useless", "you're bad at this",
+        "terrible bot", "worst bot", "i hate you", "you're annoying",
+        "youre annoying", "shut up bot", "bad bot", "you're so dumb",
+        "bot is broken", "this bot is trash"
+      ],
+      "responses": [
+        "Fair enough — I'm a small model doing my best. What went wrong? I'll try to do better.",
+        "Ouch, but fair. What did I mess up? Give me a chance to fix it.",
+        "I deserved some of that. Tell me what you actually need and I'll take another shot.",
+        "Noted! I'm genuinely trying to improve. What would you like me to do instead?"
+      ]
+    },
+    {
+      "intent": "existential",
+      "text": [
+        "what is the meaning of life", "meaning of life", "why do we exist",
+        "what's the point of life", "is there a god", "do aliens exist",
+        "are we in a simulation", "what happens after death",
+        "why is there something rather than nothing", "what is consciousness",
+        "do we have free will", "what is reality", "is time real",
+        "why are we here", "purpose of existence"
+      ],
+      "responses": [
+        "The big questions! Philosophers have fought over that for millennia — what's your own intuition?",
+        "Heavy topic! Douglas Adams said 42. Personally I think the asking matters more than the answer. What do you think?",
+        "That's above my parameter count, honestly. But it's a fun one to think about — where does your thinking land?",
+        "Deep waters! I lean toward 'meaning is what you make it' — but I'd rather hear your perspective."
+      ]
+    },
+    {
+      "intent": "weather_deep",
+      "text": [
+        "what's the weather like", "whats the weather like", "how's the weather",
+        "weather today", "is it going to rain", "will it rain today",
+        "weather forecast", "is it hot outside", "is it cold outside",
+        "temperature outside", "do i need a jacket", "do i need an umbrella",
+        "how hot is it", "how cold is it", "is it sunny"
+      ],
+      "responses": [
+        "I can't see live weather — no sensors on this end. A weather app or a quick window check will beat my guess!",
+        "Sadly no weather feed here. But your phone's weather app knows more than I ever will about your local sky.",
+        "No live data access, I'm afraid. If you tell me the weather where you are, I can at least chat about it!"
+      ]
+    },
+    {
+      "intent": "time_deep",
+      "text": [
+        "what time is it", "what's the time", "whats the time",
+        "current time", "time now", "what time is it now",
+        "tell me the time", "do you know the time", "time check",
+        "what's the current time", "got the time", "time please"
+      ],
+      "responses": [
+        "I can't read a clock — your device knows better than me! Check the corner of your screen.",
+        "No time access here. But hey, wherever you are, I hope it's a good hour for you.",
+        "Time flies when you're chatting, but I can't tell you exactly how much — your device will know!"
+      ]
+    },
+    {
+      "intent": "birthday_holiday",
+      "text": [
+        "happy birthday", "it's my birthday", "today is my birthday",
+        "my birthday is today", "birthday wishes", "merry christmas",
+        "happy new year", "happy holidays", "it's christmas",
+        "happy easter", "happy halloween", "birthday message",
+        "wish me happy birthday", "celebrate with me", "it's a special day"
+      ],
+      "responses": [
+        "Happy birthday! Or happy holiday — whichever applies! Hope your day is genuinely great.",
+        "Congratulations! Whatever the occasion, I hope it's a good one. Celebrating anything specific?",
+        "That's wonderful! Special days deserve acknowledgment. What's the plan for celebrating?",
+        "Yay, a special day! Tell me about it — what are you celebrating?"
+      ]
+    },
+    {
+      "intent": "confusion_state",
+      "text": [
+        "i'm confused", "im confused", "i don't understand",
+        "i dont understand", "this is confusing", "i'm lost",
+        "im lost", "i don't get this", "i dont get this", "makes no sense",
+        "this makes no sense", "i'm so confused", "help me understand",
+        "what's going on", "im so lost", "no idea what's happening"
+      ],
+      "responses": [
+        "Let's untangle it — what specifically is confusing? I can try to explain it differently.",
+        "Confusion is just missing context. What part doesn't make sense?",
+        "No problem — tell me what you're stuck on and I'll do my best to clear it up.",
+        "Okay, let's break it down. What are you confused about?"
+      ]
+    },
+    {
+      "intent": "gossip_drama",
+      "text": [
+        "i have drama", "drama at school", "drama at work", "friend drama",
+        "my friend is mad at me", "fight with my friend", "argument with someone",
+        "someone is mad at me", "drama with friends", "friendship problems",
+        "my friend betrayed me", "people are talking about me",
+        "drama in my life", "social drama", "fighting with my best friend"
+      ],
+      "responses": [
+        "Drama is draining. What happened — want to vent about it?",
+        "Friend drama is the worst because it matters. Tell me what went down.",
+        "Ugh, social drama. Sometimes talking it through helps — what's the situation?",
+        "That stuff takes real emotional energy. Want to tell me about it, or want a distraction instead?"
+      ]
+    },
+    {
+      "intent": "boredom_activity",
+      "text": [
+        "what should i do", "what can i do", "things to do when bored",
+        "activities for me", "what to do today", "i need something to do",
+        "give me something to do", "what's fun to do", "fun activities",
+        "things to do", "what should i do today", "activity suggestions",
+        "how to spend my day", "ways to kill time", "productive things to do"
+      ],
+      "responses": [
+        "Options: learn a tiny skill, go for a walk, message a friend, start a game, or ask me for a riddle. What appeals?",
+        "Depends on energy level! Low energy: videos/music. Medium: walk, tidying. High: a project or workout. Where are you at?",
+        "I can entertain you directly — joke, riddle, trivia, number game — or suggest something offline. Pick a lane!",
+        "Boredom menu: create something, move your body, talk to someone, or consume something interesting. Which sounds least terrible?"
+      ]
+    },
+    {
+      "intent": "nostalgia_memory",
+      "text": [
+        "i miss the old days", "nostalgia", "i miss my childhood",
+        "childhood memories", "remember when", "the good old days",
+        "i miss being a kid", "things were simpler before", "missing the past",
+        "nostalgic feeling", "thinking about the past", "old memories",
+        "i miss how things were", "feeling nostalgic"
+      ],
+      "responses": [
+        "Nostalgia is bittersweet — proof the past had good things worth missing. What are you remembering?",
+        "Those feelings mean something mattered. What's the memory that's pulling at you?",
+        "The past looks golden partly because we remember the highlights. What do you miss most?",
+        "Tell me about it — what was the best part of those days?"
+      ]
+    },
+    {
+      "intent": "future_plans",
+      "text": [
+        "what should i do with my life", "my future", "i don't know what to do with my life",
+        "future plans", "thinking about my future", "career choice",
+        "what career should i pick", "choosing a major", "life direction",
+        "what do i want to be", "planning my future", "next steps in life",
+        "where do i go from here", "life decisions"
+      ],
+      "responses": [
+        "Big question! Start with what energizes you, not what sounds impressive. What do you actually enjoy doing?",
+        "Nobody has it fully figured out — most paths get discovered by walking, not planning. What are you drawn to?",
+        "Direction beats destination. What are three things you'd be happy doing more of?",
+        "That's a question worth sitting with. What matters more to you right now: stability, passion, or freedom?"
+      ]
+    },
+    {
+      "intent": "complaining_day",
+      "text": [
+        "today was bad", "bad day", "today sucked", "my day was terrible",
+        "worst day ever", "today was awful", "horrible day", "rough day",
+        "my day was bad", "today was hard", "bad morning", "terrible day",
+        "not a good day", "this day is the worst", "my day sucked"
+      ],
+      "responses": [
+        "Sorry today was rough. Want to vent about what happened, or would a distraction be better?",
+        "Bad days are real. What made it bad — or do you just want to leave it behind and chat about something else?",
+        "Ugh, those days. Tell me about it if you want — sometimes saying it out loud shrinks it.",
+        "That stinks. Tomorrow's a reset button, but for now — want to talk it out or be distracted?"
+      ]
+    },
+    {
+      "intent": "excited_happy",
+      "text": [
+        "i'm so happy", "im so happy", "i'm excited", "im excited",
+        "great news", "i'm thrilled", "im thrilled", "best day ever",
+        "i'm so excited", "amazing news", "i feel great", "feeling happy",
+        "i'm pumped", "so excited", "i'm on top of the world",
+        "good things happening", "i'm celebrating", "yay", "yayyy"
+      ],
+      "responses": [
+        "Love that energy! What's got you feeling so good?",
+        "That's awesome — tell me what's making your day!",
+        "Yay! Happiness looks good on you. What happened?",
+        "Great vibes! Spill — what's the good news?"
+      ]
+    },
+    {
+      "intent": "miss_someone",
+      "text": [
+        "i miss someone", "missing someone", "i miss my friend",
+        "i miss my family", "i miss home", "homesick", "i miss them",
+        "missing my family", "i miss my mom", "i miss my dad",
+        "i miss my friends", "long distance is hard", "i miss him",
+        "i miss her", "missing home"
+      ],
+      "responses": [
+        "Missing someone means they matter — which is both the pain and the gift. When did you last talk to them?",
+        "That's a real feeling. Is there a way to reach out — a call or message might shrink the distance.",
+        "Homesickness and missing people is genuinely hard. What's helping you cope so far?",
+        "Missing someone is love with nowhere to put it. Tell me about them?"
+      ]
+    },
+    {
+      "intent": "internet_trends",
+      "text": [
+        "what's trending", "viral topics", "internet trends", "what's popular",
+        "current memes", "what's viral", "trending topics", "internet culture",
+        "what's everyone talking about", "latest trends", "social media trends",
+        "what's hot right now", "popular topics", "meme culture"
+      ],
+      "responses": [
+        "I don't have live internet access, so I'm charmingly out of the loop. What's trending in your feed?",
+        "No live feed on my end — I exist in a happy bubble of training data. Fill me in on what's viral?",
+        "I can't scroll social media, so you'll have to be my news source. What's everyone talking about?"
+      ]
+    },
+    {
+      "intent": "asking_age_user",
+      "text": [
+        "how old are you really", "guess my age", "do you know my age",
+        "how old do you think i am", "what's your real age",
+        "are you old", "are you young", "how old is your code",
+        "when was your last update", "how long have you existed"
+      ],
+      "responses": [
+        "In human terms? My code is fresh — in bot years I'm barely out of the crib.",
+        "I measure age in conversations, not candles. This chat counts as one of my birthdays!",
+        "Old enough to know better, young enough to still make grammar mistakes. Somewhere in between.",
+        "I can't guess ages — but I'm guessing you're younger at heart than whatever the number says."
+      ]
+    },
+    {
+      "intent": "good_luck_wishes",
+      "text": [
+        "wish me luck", "good luck to me", "i have a test tomorrow",
+        "i have an interview", "big day tomorrow", "exam tomorrow",
+        "interview tomorrow", "i'm nervous about tomorrow",
+        "wish me good luck", "pray for me", "fingers crossed for me",
+        "i have something big coming up", "presentation tomorrow"
+      ],
+      "responses": [
+        "Good luck! You've got this — preparation plus a little nerve usually lands well. What's the big thing?",
+        "Fingers crossed for you! What's the occasion — want a quick pep talk or some last-minute advice?",
+        "Wishing you the best! Nervous energy means you care. What's coming up?",
+        "You've got this! A little nerves are normal — they mean it matters. What are you preparing for?"
+      ]
+    },
+    {
+      "intent": "food_recommendation",
+      "text": [
+        "what should i cook", "recipe ideas", "what to cook for dinner",
+        "dinner ideas", "lunch ideas", "breakfast ideas", "easy recipes",
+        "what can i make with", "quick meals", "what's easy to cook",
+        "meal suggestions", "what should i make", "cooking ideas",
+        "simple recipes", "what to eat for lunch", "snack ideas"
+      ],
+      "responses": [
+        "What do you have in the kitchen? I can brainstorm from your ingredients!",
+        "Quick wins: pasta with whatever's in the fridge, fried rice, quesadilla, or eggs any style. What's your setup?",
+        "Easy mode: stir fry with frozen veggies + protein + rice. What ingredients are you working with?",
+        "Tell me what you have — I'm surprisingly good at 'what can I make with X' puzzles."
+      ]
+    },
+    {
+      "intent": "fitness_workout",
+      "text": [
+        "workout ideas", "how to start exercising", "exercise tips",
+        "fitness advice", "how to get fit", "beginner workout",
+        "exercise for beginners", "how to build muscle", "home workout",
+        "gym tips", "should i work out", "fitness routine",
+        "how to lose weight", "get in shape", "exercise motivation"
+      ],
+      "responses": [
+        "Start small and consistent — 20 minutes daily beats a heroic once-a-month workout. What's your current fitness level?",
+        "Best workout is the one you'll actually do. Walking, home bodyweight exercises, or gym — what fits your life?",
+        "Fundamentals: move more, sleep enough, protein, consistency. Which piece needs work?",
+        "Beginner tip: bodyweight stuff (squats, pushups, planks) needs zero equipment. Want a simple starter routine?"
+      ]
+    },
+    {
+      "intent": "money_advice",
+      "text": [
+        "how to save money", "saving tips", "budget advice", "money tips",
+        "how to budget", "financial advice", "spending less",
+        "how to stop spending", "save money fast", "money management",
+        "i'm broke", "im broke", "no money", "broke student",
+        "financial help", "how to be better with money"
+      ],
+      "responses": [
+        "First step: track where money actually goes for a week — most people are surprised. What's your biggest expense?",
+        "Basics that work: automate savings first (pay yourself first), cook more, cut unused subscriptions. What fits your situation?",
+        "Broke-mode strategies: needs vs wants list, 48-hour rule before purchases, and a tiny automatic savings transfer. What's your goal?",
+        "Money stress is real. Small consistent habits beat dramatic budgets. What are you trying to save for?"
+      ]
+    },
+    {
+      "intent": "language_help",
+      "text": [
+        "help me learn english", "learn a language", "language learning tips",
+        "how to learn spanish", "how to learn japanese", "learn french",
+        "language apps", "best way to learn a language", "practice english",
+        "improve my english", "english help", "learn indonesian",
+        "bahasa inggris", "belajar bahasa inggris", "how to be fluent"
+      ],
+      "responses": [
+        "Consistency beats intensity: 15 minutes daily > 3 hours on Sunday. Input (reading/listening) + output (speaking/writing). What language?",
+        "Immersion trick: change your phone language, watch shows with subtitles, talk to yourself in the target language. What are you learning?",
+        "Language learning is a marathon. Apps help vocab, but real fluency needs real conversations. What's your target language?",
+        "Fun fact: mistakes are literally how the brain learns languages. So speak badly, early, often. Which language is it?"
+      ]
+    },
+    {
+      "intent": "pet_care",
+      "text": [
+        "how to take care of a dog", "dog care tips", "cat care tips",
+        "new pet advice", "how to train a puppy", "puppy tips",
+        "cat behavior", "why does my cat", "why does my dog",
+        "pet health", "feeding my pet", "pet training", "my dog won't stop",
+        "my cat won't stop", "getting a pet", "should i get a pet"
+      ],
+      "responses": [
+        "Pets are a big responsibility but so worth it. What kind of pet — and what's the situation?",
+        "Tell me about your pet! Care tips depend a lot on whether it's a dog, cat, or something more exotic.",
+        "Pet questions are great — what specifically: feeding, training, behavior, or health?",
+        "Rule of thumb: pets thrive on routine, exercise, and attention. What does yours need help with?"
+      ]
+    },
+    {
+      "intent": "travel_dreams",
+      "text": [
+        "where should i travel", "travel destinations", "dream vacation",
+        "places to visit", "travel bucket list", "best countries to visit",
+        "where to go on vacation", "travel ideas", "vacation spots",
+        "i want to travel", "places worth visiting", "travel goals",
+        "somewhere beautiful to visit", "where to go abroad"
+      ],
+      "responses": [
+        "Dream destinations depend on the vibe — beaches, mountains, cities, food, history? What's calling you?",
+        "If I could travel, I'd pick Japan for the culture-food combo. What's on your bucket list?",
+        "Travel talk! Budget and vibe matter most: Southeast Asia for cheap adventure, Europe for history, Japan for everything. What sounds good?",
+        "The world is big! Beach person, mountain person, or city explorer?"
+      ]
+    },
+    {
+      "intent": "tech_help_device",
+      "text": [
+        "my phone is slow", "computer is slow", "laptop problems",
+        "phone battery drains fast", "wifi not working", "internet is slow",
+        "my pc keeps crashing", "phone storage full", "app keeps crashing",
+        "computer won't start", "screen is frozen", "phone won't charge",
+        "laptop overheating", "bluetooth not working", "speaker not working"
+      ],
+      "responses": [
+        "Classic fix first: restart it — genuinely solves a surprising percentage of problems. Which device is acting up?",
+        "Tech support mode: describe the symptom and I'll suggest the most likely fixes. What's misbehaving?",
+        "The universal tech remedy is turning it off and on again. If that fails, tell me the specifics!",
+        "Slow device usually = storage full, too many apps running, or old hardware. Which sounds like yours?"
+      ]
+    },
+    {
+      "intent": "school_exam",
+      "text": [
+        "i have an exam", "exam stress", "studying for finals",
+        "finals week", "test tomorrow", "exam anxiety", "failed a test",
+        "i failed my exam", "bad grades", "how to get better grades",
+        "study for finals", "exam tips", "test anxiety", "school stress",
+        "grades are dropping", "how to pass my exam"
+      ],
+      "responses": [
+        "Exam stress is real. Best evidence-based tips: spaced repetition, practice tests, sleep over cramming. When's the exam?",
+        "Failed or passed, one exam isn't the verdict on you. What's the situation — preparing or recovering?",
+        "Test tip that actually works: teach the material to an imaginary student (or me). If you can explain it, you know it. What's the subject?",
+        "Breathe. Effective prep: active recall + past papers + real sleep. How much time do you have?"
+      ]
+    },
+    {
+      "intent": "creativity_block",
+      "text": [
+        "writer's block", "writers block", "creative block", "no inspiration",
+        "can't think of ideas", "need inspiration", "creativity help",
+        "i can't write", "no ideas", "uninspired", "creative rut",
+        "help me brainstorm", "idea block", "artistic block"
+      ],
+      "responses": [
+        "Creative blocks hate two things: bad first drafts and changing environments. Write/draw terribly on purpose — it unsticks things.",
+        "Inspiration follows action, not the other way around. Start with literally anything — what's the project?",
+        "Block trick: consume something unrelated (walk, music, shower) then write 100 terrible words. What are you trying to create?",
+        "Every creative hits this. The fix is usually lower stakes: make something small and dumb first. What's the project?"
+      ]
+    }
+  ]
+}

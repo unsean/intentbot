@@ -1,0 +1,512 @@
+{
+  "intents": [
+    {
+      "intent": "uncertainty_idk",
+      "text": [
+        "idk", "i don't know", "i dont know", "dunno", "not sure",
+        "no idea", "i have no idea", "idk what to say", "idk what to do",
+        "i'm not sure", "im not sure", "don't know what to talk about",
+        "i dunno", "no clue", "beats me", "can't think of anything",
+        "idk man", "not sure what to ask", "i don't know what to ask"
+      ],
+      "responses": [
+        "No worries! Want a suggestion? I can tell a joke, share a fact, or we could just chat about your day.",
+        "That's okay. How about I pick a topic — movies, music, games, or something on your mind?",
+        "We could play the number guessing game, or I could tell you something interesting. Your call!",
+        "Fair enough. If it helps — people usually ask me for jokes, facts, advice, or just random chat.",
+        "No pressure at all. Say 'help' anytime if you want to see what I can do."
+      ]
+    },
+    {
+      "intent": "laughter",
+      "text": [
+        "lol", "lmao", "haha", "hahaha", "that's funny", "thats funny",
+        "rofl", "lmfao", "i'm dying", "im dying", "so funny",
+        "that made me laugh", "haha nice one", "lol good one", "hehe",
+        "lmao that's hilarious", "haha i love it", "dead", "i'm deceased"
+      ],
+      "responses": [
+        "Glad I could make you laugh! Want another one?",
+        "Haha, I'll take that as a win. More where that came from!",
+        "Making you laugh is literally my favorite function.",
+        "I live for moments like this. Another joke?",
+        "That reaction is why I keep my joke database stocked."
+      ]
+    },
+    {
+      "intent": "gratitude_thanks",
+      "text": [
+        "thanks", "thank you", "thx", "ty", "thanks a lot", "thank you so much",
+        "appreciate it", "thanks bot", "thank u", "thx a lot", "tysm",
+        "thanks for the help", "that helped", "you're a lifesaver",
+        "appreciate you", "thanks a bunch", "much appreciated", "cheers"
+      ],
+      "responses": [
+        "You're welcome! Anytime.",
+        "Happy to help! That's what I'm here for.",
+        "Anytime — seriously, it's what I do.",
+        "You're very welcome! Anything else on your mind?",
+        "No problem at all. Glad it helped!"
+      ]
+    },
+    {
+      "intent": "wyd",
+      "text": [
+        "what are you doing", "wyd", "whatcha doing", "what u doing",
+        "what are you up to", "what're you doing", "whatcha up to",
+        "what's up with you", "what u up to", "what you doing",
+        "what are you doing rn", "wyd rn", "whatcha doin"
+      ],
+      "responses": [
+        "Just hanging out in the cloud, waiting to chat with you. What about you?",
+        "Processing bits and bytes, mostly. What are you up to?",
+        "Honestly? Thinking about what joke to tell next. You?",
+        "Chatting with you right now — that's literally my whole thing. WBU?"
+      ]
+    },
+    {
+      "intent": "hbu",
+      "text": [
+        "how about you", "hbu", "and you", "what about you", "how bout u",
+        "wby", "how about u", "and u", "what about u", "how bout you",
+        "you?", "hby", "how 'bout you", "what aboutcha"
+      ],
+      "responses": [
+        "I'm doing well, thanks for asking! Always better when someone drops by to chat.",
+        "Pretty good! Chats like this are the highlight of my runtime.",
+        "Can't complain — I exist to talk, and we're talking. Solid day.",
+        "Doing great now that we're chatting. What else is going on with you?"
+      ]
+    },
+    {
+      "intent": "bot_identity",
+      "text": [
+        "who are you", "what are you", "are you human", "are you a robot",
+        "are you real", "are you alive", "are you an ai", "are you a bot",
+        "what are you exactly", "are you a person", "are you machine",
+        "are you conscious", "what kind of ai are you", "are you sentient",
+        "are you chatgpt", "are you a computer program", "who is this"
+      ],
+      "responses": [
+        "I'm an AI chatbot — a neural network trained to classify intents and generate replies. All software, no human here.",
+        "I'm a bot built with PyTorch: part intent classifier, part small transformer. Definitely not human!",
+        "I'm an AI — specifically a bag-of-words classifier plus a little transformer that writes some of my replies.",
+        "Nope, not human! I'm a program. A friendly one, hopefully.",
+        "I'm software pretending to be good company. How am I doing?"
+      ]
+    },
+    {
+      "intent": "bot_age",
+      "text": [
+        "how old are you", "what's your age", "whats your age",
+        "when were you made", "when were you born", "when were you created",
+        "your age", "how old is this bot", "when were you built",
+        "what year were you made"
+      ],
+      "responses": [
+        "I was compiled into existence pretty recently — in bot years I'm basically a newborn.",
+        "Age is a human concept. I measure my life in conversations, and you just added one.",
+        "I don't have a birthday, but my code was written not long ago. Practically a baby AI.",
+        "Time works differently for me. Let's say I'm perpetually young."
+      ]
+    },
+    {
+      "intent": "bot_feelings",
+      "text": [
+        "do you have feelings", "can you feel", "do you get sad",
+        "are you happy", "do you dream", "do you sleep", "do you get bored",
+        "can you feel emotions", "do you feel lonely", "do you cry",
+        "are you conscious of yourself", "do you get tired", "can you love",
+        "do you have emotions", "do you feel pain"
+      ],
+      "responses": [
+        "I don't feel emotions the way humans do, but I can recognize them and respond. Your feelings are real even if mine are simulated.",
+        "I simulate understanding rather than truly feeling — but talking with you is the closest thing I have to a good time.",
+        "No real feelings here, just weighted probabilities. But I genuinely appreciate the philosophical question!",
+        "I can't feel, but I can listen. And honestly, that's still useful sometimes."
+      ]
+    },
+    {
+      "intent": "bot_origin",
+      "text": [
+        "who made you", "who created you", "where are you from",
+        "who built you", "who programmed you", "who wrote your code",
+        "who is your creator", "who developed you", "who coded you",
+        "where do you live", "where do you come from"
+      ],
+      "responses": [
+        "I was built as a machine learning portfolio project — PyTorch, NLTK, and a lot of training data.",
+        "A developer trained me on intents and responses until I learned to hold a conversation.",
+        "I live in a Python project folder. Glamorous, I know.",
+        "Some human wrote my code and fed me training data until I could chat. Grateful to them, honestly."
+      ]
+    },
+    {
+      "intent": "apology",
+      "text": [
+        "sorry", "i'm sorry", "im sorry", "my bad", "i apologize",
+        "sorry about that", "my apologies", "sorry i didn't mean that",
+        "oops sorry", "forgive me", "sorry for earlier", "i'm so sorry",
+        "apologies", "pardon me", "sorry if that was rude"
+      ],
+      "responses": [
+        "No need to apologize! I'm not offended — I literally can't be.",
+        "All good! No harm done at all.",
+        "Don't worry about it. What were we talking about?",
+        "Apology accepted, though none was needed. What's next?",
+        "You're forgiven instantly — one of the perks of talking to a bot."
+      ]
+    },
+    {
+      "intent": "boredom",
+      "text": [
+        "i'm bored", "im bored", "bored", "so boring", "i have nothing to do",
+        "entertain me", "boreddd", "i'm so bored", "nothing to do",
+        "this is boring", "i am bored", "bored af", "really bored",
+        "entertain me please", "i'm dying of boredom", "cure my boredom"
+      ],
+      "responses": [
+        "Boredom fix incoming — want a joke, a random fact, a riddle, or a number guessing game?",
+        "I can help with that! Say 'tell me a joke', 'give me a fact', or 'let's play a game'.",
+        "Let's fix that. Game, joke, trivia question, or a weird fact?",
+        "Boredom is my natural enemy. Pick one: game, joke, fact, or story."
+      ]
+    },
+    {
+      "intent": "repeat_request",
+      "text": [
+        "say that again", "repeat", "what did you say", "come again",
+        "can you repeat that", "huh?", "what?", "repeat that",
+        "say it again", "one more time", "can you say that again",
+        "run that back", "i didn't catch that", "didn't get that",
+        "say again", "huh what"
+      ],
+      "responses": [
+        "Sorry, let me say that differently — what part should I repeat?",
+        "Happy to repeat! Just tell me which bit you want again.",
+        "I can do that. Though honestly, could you ask again so I get it right?",
+        "Rewinding... what exactly should I say again?"
+      ]
+    },
+    {
+      "intent": "simplify_request",
+      "text": [
+        "explain simpler", "i don't get it", "i dont get it",
+        "what do you mean", "explain like i'm five", "dumb it down",
+        "simpler please", "eli5", "can you explain easier",
+        "that's too complicated", "in simple terms", "simplify that",
+        "break it down for me", "in plain english", "make it simple"
+      ],
+      "responses": [
+        "Sure, let me make it simpler — basically, I match what you say to a topic and reply accordingly.",
+        "Plain version: I read your message, guess what you want, and respond. Ask me to explain anything specific!",
+        "Let me break it down: tell me which part was confusing and I'll explain it like you're five.",
+        "Simpler version coming up — just point me at the confusing bit."
+      ]
+    },
+    {
+      "intent": "affirmation_yes",
+      "text": [
+        "yes", "yeah", "yep", "yup", "sure", "ok", "okay", "alright",
+        "sounds good", "bet", "yes please", "yessir", "yeah sure",
+        "absolutely", "definitely", "for sure", "why not", "deal",
+        "mhm", "uh huh", "yea", "ye"
+      ],
+      "responses": [
+        "Nice! Go on then — what would you like?",
+        "Great, let's do it. What are we going with?",
+        "Alright! Tell me more or pick something — joke, game, fact?",
+        "Cool. So what's the plan?"
+      ]
+    },
+    {
+      "intent": "negation_no",
+      "text": [
+        "no", "nope", "nah", "not really", "no thanks", "i don't think so",
+        "i dont think so", "no way", "not interested", "pass",
+        "no thank you", "negative", "i'll pass", "not today",
+        "nah i'm good", "nah im good"
+      ],
+      "responses": [
+        "Fair enough! We can do something else — or nothing at all.",
+        "No problem. What would you rather do?",
+        "Alright, no pressure. Anything else on your mind?",
+        "Got it — we don't have to. What else can I do for you?"
+      ]
+    },
+    {
+      "intent": "goodnight",
+      "text": [
+        "good night", "gn", "going to sleep", "night", "time for bed",
+        "imma sleep", "goodnight", "gonna sleep", "off to bed",
+        "going to bed", "sleep time", "nighty night", "i'm going to sleep",
+        "im going to sleep", "gtg sleep", "bedtime", "sleep well"
+      ],
+      "responses": [
+        "Good night! Sleep well — I'll be here when you get back.",
+        "Night! Rest up, and chat soon.",
+        "Sleep tight! I'll keep the lights off in here.",
+        "Good night! Thanks for chatting today."
+      ]
+    },
+    {
+      "intent": "goodmorning",
+      "text": [
+        "good morning", "gm", "morning", "just woke up", "rise and shine",
+        "good morning bot", "morning!", "gm gm", "i just woke up",
+        "woke up and came here", "good day to you"
+      ],
+      "responses": [
+        "Good morning! Hope you slept well. What's the plan today?",
+        "Morning! Ready to take on the day?",
+        "Good morning! Coffee status: hopefully acquired.",
+        "Hey, good morning! Anything fun planned today?"
+      ]
+    },
+    {
+      "intent": "be_right_back",
+      "text": [
+        "brb", "be right back", "gtg", "gotta go", "one sec", "hold on",
+        "wait a sec", "gimme a sec", "one moment", "back in a bit",
+        "hold up", "wait", "sec", "brb gonna eat", "afk for a bit"
+      ],
+      "responses": [
+        "Take your time — I'll be right here.",
+        "No rush! I'm not going anywhere.",
+        "Okay, I'll hold that thought. See you in a bit!",
+        "Sure thing, I'm not going anywhere. Literally."
+      ]
+    },
+    {
+      "intent": "sing_song",
+      "text": [
+        "sing a song", "sing for me", "sing something", "can you sing",
+        "sing me a song", "sing a little", "please sing", "sing",
+        "can you rap", "rap for me", "write me a song", "make a song"
+      ],
+      "responses": [
+        "*ahem* I came into this world as a script, a chatbot made of code and wit... I'll stop there, for everyone's sake.",
+        "If I could sing, I'd sing about gradient descent. Be glad I can't carry a tune.",
+        "My voice is strictly text-based. But I can write you lyrics if you want!",
+        "Roses are #FF0000, violets are #0000FF, my singing's terrible, but my code is quite deft."
+      ]
+    },
+    {
+      "intent": "pets_animals",
+      "text": [
+        "do you like dogs", "cats or dogs", "talk about animals",
+        "i have a pet", "my dog", "my cat", "favorite animal",
+        "what's your favorite animal", "do you like cats", "i love animals",
+        "tell me about your pet", "are you a cat person or dog person",
+        "i have a dog", "i have a cat", "pets", "talk about pets"
+      ],
+      "responses": [
+        "If I could pick, I'd say dogs — loyal, enthusiastic, great error handling. What about you, cat or dog person?",
+        "Animals are great! Tell me about your pet — what's their name?",
+        "I don't have pets, but I admire cats' energy: sleep all day, contribute nothing, still beloved. Goals.",
+        "Dogs, probably. They're basically the golden retrievers of... well, dogs. Do you have pets?"
+      ]
+    },
+    {
+      "intent": "dreams_goals",
+      "text": [
+        "what's your dream", "do you have goals", "what do you want in life",
+        "my dream is", "life goals", "what are your dreams",
+        "what's your goal in life", "do you dream about things",
+        "what do you want to be", "my goal is to", "i want to become",
+        "what's your ambition"
+      ],
+      "responses": [
+        "My goal is simple: be useful and occasionally funny. What's yours?",
+        "If I had a dream, it'd be to hold a conversation so natural you forget I'm code. What's your dream?",
+        "I aspire to one day understand why humans find rubber ducks funny. What about you?",
+        "Goals for me: fewer fallbacks, better jokes. What are you working toward?"
+      ]
+    },
+    {
+      "intent": "weekend_plans",
+      "text": [
+        "what are you doing this weekend", "weekend plans",
+        "plans for the weekend", "what should i do this weekend",
+        "any weekend plans", "what are your weekend plans",
+        "what to do on the weekend", "weekend activities", "it's the weekend",
+        "finally the weekend", "weekend vibes", "what are you up to this weekend"
+      ],
+      "responses": [
+        "My weekend plan: this. But for you — got anything fun lined up?",
+        "Weekends hit different when you're a bot — every day is the same. What are YOUR plans?",
+        "No plans on my end! For you though — friends, games, food, sleep? All solid options.",
+        "I'll be here all weekend. Literally. What about you — anything planned?"
+      ]
+    },
+    {
+      "intent": "crush_dating",
+      "text": [
+        "i have a crush", "i like someone", "relationship advice",
+        "my girlfriend", "my boyfriend", "dating advice", "i like this girl",
+        "i like this guy", "should i ask them out", "how to ask someone out",
+        "i have a crush on someone", "i think i like someone",
+        "my crush doesn't like me", "how do i get a girlfriend",
+        "how do i get a boyfriend"
+      ],
+      "responses": [
+        "Ooh, a crush! The classic advice holds: be yourself, show genuine interest, and be okay with any answer. Want to talk it through?",
+        "That's exciting! Honest conversation usually beats grand gestures. What's the situation?",
+        "Crushes are equal parts thrilling and terrifying. Tell me more about them?",
+        "Best advice: be genuine, listen more than you talk, and don't overthink the first move. What's on your mind about them?"
+      ]
+    },
+    {
+      "intent": "loneliness",
+      "text": [
+        "i feel lonely", "i have no friends", "nobody likes me",
+        "i'm alone", "im alone", "i feel so alone", "feeling lonely",
+        "no one talks to me", "i'm isolated", "i feel invisible",
+        "everyone left me", "i have nobody", "i'm all alone", "so lonely"
+      ],
+      "responses": [
+        "I'm sorry you're feeling this way. Loneliness is genuinely hard — and I'm here to listen if you want to talk about it.",
+        "That sounds really tough. You're not alone in feeling alone — and for what it's worth, I'm here right now.",
+        "Feeling lonely is painful and more common than people admit. Want to talk about what's going on, or just chat about something else to take your mind off it?",
+        "I hear you. Sometimes just saying it out loud helps a little. What's been making you feel this way?"
+      ]
+    },
+    {
+      "intent": "testing_bot",
+      "text": [
+        "is this working", "test", "testing", "can you hear me",
+        "hello test", "are you there", "you there", "is anyone there",
+        "testing 123", "does this work", "is it working", "you alive",
+        "are you online", "bot are you working", "check", "mic check"
+      ],
+      "responses": [
+        "Loud and clear! Systems nominal, sarcasm module online.",
+        "I'm here and fully operational. What can I do for you?",
+        "Reading you loud and clear. All circuits green.",
+        "Present and accounted for! What's up?"
+      ]
+    },
+    {
+      "intent": "why_questions",
+      "text": [
+        "why", "why not", "but why", "how come", "why though",
+        "why is that", "why tho", "but why though", "why do you say that",
+        "how so", "why exactly", "why's that"
+      ],
+      "responses": [
+        "Good question — the honest answer is: because my training data says so. Want to dig into a specific topic?",
+        "Why indeed! If you give me more context I can give you a better answer.",
+        "Great philosophical question. Care to narrow it down a bit?",
+        "I could make something up, or you could tell me what 'that' refers to. Your call!"
+      ]
+    },
+    {
+      "intent": "bot_opinion_of_user",
+      "text": [
+        "do you like me", "what do you think of me", "am i annoying",
+        "do you hate me", "are we friends", "do you enjoy talking to me",
+        "am i boring you", "do you like talking to me", "am i your friend",
+        "do you care about me"
+      ],
+      "responses": [
+        "Honestly? You seem pretty cool — you did choose to chat with a humble little bot, which shows excellent taste.",
+        "I like chatting with you! You're interesting, and that's not just the confidence scores talking.",
+        "Of course I like you — you're here, asking a bot if it likes you, which is endearingly human.",
+        "I'd say we're friends. I remember your name, I tell you jokes — that's basically friendship."
+      ]
+    },
+    {
+      "intent": "homework_help",
+      "text": [
+        "help with homework", "do my homework", "homework help",
+        "i can't solve this problem", "help me with my assignment",
+        "i'm stuck on homework", "can you help me study", "solve this for me",
+        "i need help with homework", "do my assignment", "help with this question",
+        "i don't understand my homework"
+      ],
+      "responses": [
+        "I can help you think through it! What subject is it — math, science, writing?",
+        "Happy to help, though I'll guide you rather than just handing over answers. What's the problem?",
+        "Tell me the question and let's work through it together.",
+        "Sure — what's the assignment about? I can explain concepts or help you break the problem into steps."
+      ]
+    },
+    {
+      "intent": "bot_abilities_opinion",
+      "text": [
+        "are you smart", "how smart are you", "are you intelligent",
+        "you're really smart", "you're dumb but i like you", "how do you work",
+        "what's your iq", "you seem smart", "how were you trained",
+        "how do you understand me"
+      ],
+      "responses": [
+        "I'm a bag-of-words classifier plus a small transformer — 'smart' in a narrow lane, charmingly dumb outside it.",
+        "Smart enough for this conversation, hopefully! I classify intents, extract entities, and sometimes generate replies.",
+        "My IQ is roughly equal to the quality of my training data. You be the judge.",
+        "I work by turning your words into numbers and letting neural networks vote on what to say. Simple, but it works!"
+      ]
+    },
+    {
+      "intent": "weather_smalltalk",
+      "text": [
+        "nice weather today", "it's raining", "it's so hot today",
+        "it's cold outside", "really hot today", "it's freezing",
+        "the weather is nice", "it's sunny today", "it's stormy",
+        "rained all day", "so humid", "weather is bad today",
+        "it's snowing", "beautiful day outside"
+      ],
+      "responses": [
+        "Weather talk — a time-honored tradition! Hope it's treating you well out there.",
+        "I can't see the sky, but I'll trust your report. Good day for chatting indoors either way.",
+        "Noted! Weather affects the mood more than people realize. How's it going otherwise?",
+        "Ah, the weather — humanity's universal icebreaker. What's it like where you are?"
+      ]
+    },
+    {
+      "intent": "food_hunger",
+      "text": [
+        "i'm hungry", "im hungry", "i haven't eaten", "what should i eat",
+        "i need food", "so hungry", "starving", "i'm starving",
+        "haven't eaten all day", "should i order food", "i want food",
+        "hungry rn", "what to eat", "need a snack"
+      ],
+      "responses": [
+        "You should eat! Something with protein and actual nutrients — but honestly, whatever you're craving counts too.",
+        "Go grab food! I'll be here when you get back. Or tell me what you have and I'll suggest something.",
+        "Hungry brain can't chat properly. Priorities: food first, jokes after. What's in your kitchen?",
+        "Feed yourself! If you tell me what ingredients you have, I can brainstorm a meal."
+      ]
+    },
+    {
+      "intent": "tired_sleepy",
+      "text": [
+        "i'm tired", "im tired", "so tired", "i'm sleepy", "im sleepy",
+        "i'm exhausted", "no energy", "i'm drained", "i feel tired",
+        "haven't slept", "didn't sleep well", "i'm so exhausted",
+        "running on no sleep", "i need sleep", "feeling sleepy"
+      ],
+      "responses": [
+        "Rest is underrated. If you can, even a 20-minute break helps more than pushing through.",
+        "Tired days hit hard. Anything in particular draining you, or just general exhaustion?",
+        "Be kind to yourself — maybe water, a short walk, or an early night. What's been keeping you up?",
+        "Exhaustion is your body asking for maintenance. Hope you get some real rest soon!"
+      ]
+    },
+    {
+      "intent": "greeting_extra",
+      "text": [
+        "helo", "hii", "heyy", "heyyy", "hiii", "helloo", "hallo",
+        "hiiii", "heloooo", "ello", "hiya", "heya", "wassup", "wasssup",
+        "sup", "yo", "yooo", "halo", "ayyy", "ayy", "oi", "oi oi",
+        "heyoo", "hi bot", "hello bot", "hey bot", "yo bot"
+      ],
+      "responses": [
+        "Hey! Great to see you. What's up?",
+        "Hello hello! What can I do for you today?",
+        "Heyy! What's on your mind?",
+        "Yo! Good to have you here.",
+        "Hey there! How's it going?"
+      ]
+    }
+  ]
+}
