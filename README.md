@@ -20,6 +20,22 @@ model can't compute those, so we don't ask it to.
 All free APIs, no keys needed. Tool commands run deterministically so they
 always hit the right function.
 
+## Context
+
+The bot remembers what it asked you — if a tool needs an argument it asks,
+and your next message is the answer:
+
+```
+You: weather
+Bot: Which city? Try 'Jakarta'.
+You: tokyo          ← understood as the pending answer
+Bot: Tokyo, Japan: 19.1C, mostly clear, ...
+```
+
+Same flow works for `search`, `wikipedia`, and `crypto price`. Short
+answers (≤2 words) feed the pending question; real commands interrupt it.
+Persistent memory covers your name and the bot's name across restarts.
+
 ## Run it
 
 ```bash

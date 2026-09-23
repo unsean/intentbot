@@ -928,6 +928,7 @@ _TOOL_SEARCH_RE = re.compile(
 )
 _TOOL_WIKI_RE = re.compile(r"^(?:wiki|wikipedia)\s+(.+)", re.IGNORECASE)
 _TOOL_WEATHER_RE = re.compile(
+    r"^\s*weather\b|"
     r"\bweather\s+(?:in|at|for|like|today|forecast|report)|"
     r"(?:what'?s|how'?s|check)\s+(?:the\s+)?weather|\bcuaca\b",
     re.IGNORECASE,
@@ -945,6 +946,40 @@ _TOOL_DATETIME_RE = re.compile(
     r"jam berapa|hari apa|tanggal berapa",
     re.IGNORECASE,
 )
+
+
+def _known_coin(message: str) -> Optional[str]:
+    m = tools._COIN_RE.search(message or "")
+    if not m:
+        return None
+    return tools._COIN_IDS.get((m.group(1) or m.group(2) or "").lower())
+
+
+# For tools that need an argument: (has_arg, wrap_answer_fn, ask_text).
+# When has_arg(message) is False, the ask text is shown AND a pending
+# question is stored — the user's next message becomes the argument.
+_TOOL_ARG_SPECS = {
+    "weather": (
+        lambda m: bool(tools._CITY_RE.search(m)),
+        lambda q: tools.get_weather(f"weather in {q}"),
+        "Which city? Try 'Jakarta'.",
+    ),
+    "web_search": (
+        lambda m: bool(tools._query_after_trigger(m)),
+        lambda q: tools.web_search(q),
+        "What should I search for? Try 'search for black holes'.",
+    ),
+    "wiki_lookup": (
+        lambda m: bool(tools._query_after_trigger(m)),
+        lambda q: tools.wiki_lookup(q),
+        "What topic? I'll pull the Wikipedia summary.",
+    ),
+    "crypto_price": (
+        lambda m: _known_coin(m) is not None,
+        lambda q: tools.crypto_price(f"price of {q}"),
+        "Which coin? Try bitcoin, eth, sol...",
+    ),
+}
 
 GREETING_PHRASES = {
     "hi", "hello", "hey", "hi there", "hello there", "hey there",
@@ -984,6 +1019,48 @@ SHORTCUT_INTENTS = {
     "hungry": "food_hunger", "starving": "food_hunger",
     "tired": "tired_sleepy", "sleepy": "tired_sleepy",
     "sing": "sing_song",
+    # missing-argument / phrasing variants
+    "idont know": "uncertainty_idk", "i dont know": "uncertainty_idk",
+    "dont know": "uncertainty_idk", "no idea": "uncertainty_idk",
+    "not sure": "uncertainty_idk", "no clue": "uncertainty_idk",
+    # Indonesian shortcuts
+    "iya": "affirmation_yes", "iyaa": "affirmation_yes", "ya": "affirmation_yes",
+    "yoi": "affirmation_yes", "oke": "affirmation_yes", "ok": "affirmation_yes",
+    "okey": "affirmation_yes", "sip": "affirmation_yes", "gas": "affirmation_yes",
+    "boleh": "affirmation_yes", "betul": "affirmation_yes",
+    "bener": "affirmation_yes", "mantap": "affirmation_yes",
+    "gak": "negation_no", "ga": "negation_no", "nggak": "negation_no",
+    "enggak": "negation_no", "kaga": "negation_no", "ngga": "negation_no",
+    "gak tau": "uncertainty_idk", "ga tau": "uncertainty_idk",
+    "nggak tau": "uncertainty_idk", "gatau": "uncertainty_idk",
+    "gatau juga": "uncertainty_idk", "saya tidak tahu": "uncertainty_idk",
+    "aku tidak tahu": "uncertainty_idk", "tidak tahu": "uncertainty_idk",
+    "kurang tau": "uncertainty_idk", "ga ngerti": "uncertainty_idk",
+    "gak ngerti": "uncertainty_idk", "nggak ngerti": "uncertainty_idk",
+    "wkwk": "indonesian_laugh", "wkwkwk": "indonesian_laugh",
+    "awokawok": "indonesian_laugh", "kwkw": "indonesian_laugh",
+    "xixixi": "indonesian_laugh", "wakaka": "indonesian_laugh",
+    "woi": "indonesian_greeting", "woy": "indonesian_greeting",
+    "halo": "indonesian_greeting", "hai": "indonesian_greeting",
+    "hei": "indonesian_greeting", "oi": "indonesian_greeting",
+    "oy": "indonesian_greeting", "p": "indonesian_greeting",
+    "bang": "indonesian_greeting", "bro": "indonesian_greeting",
+    "kak": "indonesian_greeting", "mas": "indonesian_greeting",
+    "makasih": "indonesian_thanks", "makasi": "indonesian_thanks",
+    "trims": "indonesian_thanks", "terima kasih": "indonesian_thanks",
+    "kontol": "insult_response", "anjing": "insult_response",
+    "bangsat": "insult_response", "anjir": "insult_response",
+    "anjay": "insult_response", "babi": "insult_response",
+    "tolol": "insult_response", "goblok": "insult_response",
+    "bodoh": "insult_response", "memek": "insult_response",
+    "asu": "insult_response", "jancok": "insult_response",
+    "jancuk": "insult_response", "bgst": "insult_response",
+    "njir": "insult_response", "njing": "insult_response",
+    "fuck": "insult_response", "fuck you": "insult_response",
+    "stfu": "insult_response",
+    "gabut": "indonesian_casual", "laper": "indonesian_casual",
+    "ngantuk": "indonesian_casual", "capek": "indonesian_casual",
+    "baik": "indonesian_casual", "aku": "indonesian_casual",
 }
 
 FOLLOWUP_TRIGGERS = {"another", "more", "again", "one more", "tell me more"}
@@ -1414,6 +1491,7 @@ class ChatAssistant:
                 "user_preferences": {},
                 "session_start": datetime.now().isoformat(),
                 "last_intent": None,
+                "pending": None,
             }
             self.current_context[user_id] = ctx
         return ctx
@@ -1615,6 +1693,17 @@ class ChatAssistant:
             text = "No game is running right now. Say 'play a game' to start one!"
             return self._finalize(message, text, "play_game", 1.0, {}, user_id)
 
+        # 2b. Pending question from a tool ("Which city?") — the next message
+        # is the answer, unless it's clearly a new command
+        pending = ctx.get("pending")
+        if pending:
+            ctx["pending"] = None
+            if not self._looks_like_new_command(message, lower, pending["intent"]):
+                text = pending["fn"](message)
+                return self._finalize(
+                    message, text, pending["intent"], 1.0, {}, user_id
+                )
+
         # 3. Name capture / query
         name = self._extract_name(message)
         if name:
@@ -1654,7 +1743,7 @@ class ChatAssistant:
             return self._finalize(message, text, "math_question", 1.0, {}, user_id)
 
         # 4b. Explicit tool commands (web search, weather, wiki, crypto, datetime)
-        tool = self._detect_tool_call(message)
+        tool = self._detect_tool_call(message, user_id)
         if tool is not None:
             intent_tag, text = tool
             return self._finalize(message, text, intent_tag, 1.0, {}, user_id)
@@ -1753,22 +1842,60 @@ class ChatAssistant:
                     return name
         return None
 
-    def _detect_tool_call(self, message: str) -> Optional[Tuple[str, str]]:
+    def _detect_tool_call(
+        self, message: str, user_id: str = "default"
+    ) -> Optional[Tuple[str, str]]:
         """Explicit tool commands — deterministic, checked before the
-        classifier so 'search X' never gets misrouted."""
+        classifier so 'search X' never gets misrouted. When the argument
+        is missing, stores a pending question so the next message is the
+        answer (context carry-over)."""
         lower = message.strip().lower()
-        m = _TOOL_SEARCH_RE.match(lower)
-        if m and len(m.group(1)) > 1:
-            return "web_search", tools.web_search(message)
-        if _TOOL_WIKI_RE.match(lower):
-            return "wiki_lookup", tools.wiki_lookup(message)
-        if _TOOL_WEATHER_RE.search(lower):
-            return "weather", tools.get_weather(message)
-        if _TOOL_CRYPTO_RE.search(lower):
-            return "crypto_price", tools.crypto_price(message)
-        if _TOOL_DATETIME_RE.search(lower):
+        fired: Optional[Tuple[str, Callable]] = None
+        if _TOOL_SEARCH_RE.match(lower):
+            fired = ("web_search", tools.web_search)
+        elif _TOOL_WIKI_RE.match(lower):
+            fired = ("wiki_lookup", tools.wiki_lookup)
+        elif _TOOL_WEATHER_RE.search(lower):
+            fired = ("weather", tools.get_weather)
+        elif _TOOL_CRYPTO_RE.search(lower):
+            fired = ("crypto_price", tools.crypto_price)
+        elif _TOOL_DATETIME_RE.search(lower):
             return "datetime_query", tools.datetime_info(message)
-        return None
+        if fired is None:
+            return None
+        intent, fn = fired
+        spec = _TOOL_ARG_SPECS.get(intent)
+        if spec and not spec[0](message):
+            return intent, self._ask_pending(user_id, intent, spec[1], spec[2])
+        return intent, fn(message)
+
+    def _ask_pending(self, user_id: str, intent: str, fn, ask: str) -> str:
+        """Store a pending question — the next user message is its answer."""
+        self._context_for(user_id)["pending"] = {"intent": intent, "fn": fn}
+        return ask
+
+    def _looks_like_new_command(
+        self, message: str, lower: str, pending_intent: str
+    ) -> bool:
+        """True if this message abandons a pending question and starts a
+        new command/topic instead. Short answers (<=2 words) are almost
+        always the pending answer, not a new command."""
+        if lower in SHORTCUT_INTENTS or lower in RESET_COMMANDS or lower in HELP_COMMANDS:
+            return True
+        if looks_like_math(message):
+            return True
+        if any(
+            rx.search(lower)
+            for rx in (
+                _TOOL_SEARCH_RE, _TOOL_WIKI_RE, _TOOL_WEATHER_RE,
+                _TOOL_CRYPTO_RE, _TOOL_DATETIME_RE,
+            )
+        ):
+            return True
+        if len(lower.split()) <= 2:
+            return False
+        tag, conf = self._predict(message)
+        return conf >= 0.55 and tag != pending_intent
 
     def _is_bot_name_query(self, lower: str) -> bool:
         return any(p in lower for p in (
@@ -1855,6 +1982,13 @@ class ChatAssistant:
             try:
                 result = self._call_extension(func_name, func, message, entities)
                 if result:
+                    # tool asked for a missing argument -> remember it, so the
+                    # user's next message is treated as the answer
+                    spec = _TOOL_ARG_SPECS.get(intent_tag)
+                    if spec and not spec[0](message):
+                        self._context_for(user_id)["pending"] = {
+                            "intent": intent_tag, "fn": spec[1],
+                        }
                     # ai_name_setting extension only returns text — apply it
                     if intent_tag == "ai_name_setting" and entities.get("AI_NAME"):
                         new_name = entities["AI_NAME"][0]
