@@ -82,24 +82,31 @@ class TestThoughtSplit:
         a = _assistant()
         raw = "think intent is joke. they mention humor. answer why did the chicken cross"
         assert a._split_thought(raw) == "Why did the chicken cross"
-        assert "Intent is joke" in a.last_thought
+        assert "Intent is joke" in a._model_thought
 
     def test_bracketed_form(self):
         a = _assistant()
         raw = "[think] reasoning here [answer] real reply"
         assert a._split_thought(raw) == "Real reply"
-        assert a.last_thought == "Reasoning here"
+        assert a._model_thought == "Reasoning here"
 
     def test_no_markers_passes_through(self):
         a = _assistant()
         assert a._split_thought("just a normal reply") == "Just a normal reply"
-        assert a.last_thought == ""
+        assert a._model_thought == ""
 
     def test_thought_reset_each_call(self):
         a = _assistant()
         a._split_thought("think reasoning answer reply")
         a._split_thought("plain text")
-        assert a.last_thought == ""
+        assert a._model_thought == ""
+
+    def test_display_thought_is_pipeline_state(self):
+        a = _assistant()
+        a.think = True
+        a.handle_message("what is 5 * 5", "u1")
+        # honest thoughts describe the route, not generated text
+        assert "arithmetic" in a.last_thought
 
 
 class TestLLMClient:

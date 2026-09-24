@@ -48,7 +48,7 @@ def _query_after_trigger(message: str) -> str:
 
 
 _CITY_RE = re.compile(
-    r"\b(?:in|at|for|di)\s+([a-zA-Z][a-zA-Z .'-]*?)\s*(?:[?!.,]|today|now|skrg|sekarang|$)",
+    r"\b(?:in|at|for|on|di)\s+([a-zA-Z][a-zA-Z .'-]*?)\s*(?:[?!.,]|today|now|skrg|sekarang|$)",
     re.IGNORECASE,
 )
 

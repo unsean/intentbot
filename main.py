@@ -973,7 +973,7 @@ _TOOL_SEARCH_RE = re.compile(
 _TOOL_WIKI_RE = re.compile(r"^(?:wiki|wikipedia)\s+(.+)", re.IGNORECASE)
 _TOOL_WEATHER_RE = re.compile(
     r"^\s*weather\b|"
-    r"\bweather\s+(?:in|at|for|like|today|forecast|report)|"
+    r"\bweather\s+(?:in|at|for|on|di|like|today|forecast|report)|"
     r"(?:what'?s|how'?s|check)\s+(?:the\s+)?weather|\bcuaca\b",
     re.IGNORECASE,
 )
@@ -1208,6 +1208,7 @@ class ChatAssistant:
         self.llm = LLMClient()
         # reasoning text the transformer produced before its answer
         self.last_thought: str = ""
+        self._model_thought: str = ""
 
         self.intents: List[str] = []
         self.responses: Dict[str, List[str]] = {}
@@ -1761,26 +1762,39 @@ class ChatAssistant:
     def _split_thought(self, raw: str, hint: str = "chat") -> str:
         """Split generated reasoning from the visible answer.
 
-        Current format (intent teacher-forced, stripped before this call):
-            "{reasoning} [answer] {reply}"  -> thought = "{hint}: {reasoning}"
-        Legacy format still handled:
-            "[think] {thought} [answer] {reply}"
+        The model's free-generated reasoning is stored on
+        self._model_thought and only shown via --think traces — a small
+        model verbalizes inaccurately, so the displayed (thinking) line is
+        built from real pipeline state instead (see _gen_thought).
         """
-        self.last_thought = ""
+        self._model_thought = ""
         m = self._THINK_RE.match(raw)
         if m:
-            self.last_thought = clean_reply(m.group(1))
-            self._tr(f"model thought: {self.last_thought}")
+            self._model_thought = clean_reply(m.group(1))
+            self._tr(f"model reasoning: {self._model_thought}")
             return clean_reply(m.group(2))
         m = self._ANSWER_RE.match(raw)
         if m:
-            reasoning = clean_reply(m.group(1))
-            self.last_thought = (
-                f"{hint}: {reasoning}" if reasoning else hint
-            )
-            self._tr(f"model thought: {self.last_thought}")
+            self._model_thought = clean_reply(m.group(1))
+            self._tr(f"model reasoning: {self._model_thought}")
             return clean_reply(m.group(2))
         return clean_reply(raw)
+
+    def _gen_thought(
+        self, hint: str, confidence: float, user_id: str
+    ) -> str:
+        """Honest '(thinking)' line for a generated reply — built from the
+        real classified intent, confidence, and conversation context, not
+        the model's self-report."""
+        parts = [hint.replace("_", " ")]
+        if confidence:
+            parts.append(f"{confidence:.0%} sure")
+        ctx_txt = self._gen_context(user_id)
+        if ctx_txt:
+            prev_u = ctx_txt.split(" | ", 1)[0]
+            parts.append(f"continuing from '{prev_u[:28]}'")
+        parts.append("writing a reply")
+        return " · ".join(parts)
 
     def _llm_messages(
         self, message: str, user_id: str
@@ -1997,6 +2011,9 @@ class ChatAssistant:
                     None,
                 )
                 if last_msg and self._gen_has_signal(last_msg):
+                    self.last_thought = self._gen_thought(
+                        last_intent or "chat", 0.9, user_id
+                    )
                     text = self._generate_reply(
                         last_msg, on_token, intent_hint=last_intent,
                         user_id=user_id,
@@ -2019,6 +2036,7 @@ class ChatAssistant:
             if self.generative_ready and intent_tag not in DYNAMIC_INTENTS:
                 # context-dependent replies trained under the "chat" tag
                 hint = "chat" if ctx_reply else intent_tag
+                self.last_thought = self._gen_thought(hint, 0, user_id)
                 text = self._generate_reply(
                     message, on_token, intent_hint=hint, user_id=user_id
                 )
@@ -2046,6 +2064,9 @@ class ChatAssistant:
                 self._tr(
                     f"route: generative (conf {confidence:.2f} < "
                     f"{self.confidence_threshold}, hint=chat, ctx={has_ctx})"
+                )
+                self.last_thought = self._gen_thought(
+                    "chat", confidence, user_id
                 )
                 text = self._generate_reply(
                     message, on_token, intent_hint="chat", user_id=user_id
@@ -2086,6 +2107,7 @@ class ChatAssistant:
             ctx_dep = intent_tag in CONTEXT_DEPENDENT_INTENTS and has_ctx
             hint = "chat" if ctx_dep else intent_tag
             self._tr(f"route: generative (hint={hint}, ctx={has_ctx})")
+            self.last_thought = self._gen_thought(hint, confidence, user_id)
             text = self._generate_reply(
                 message, on_token, intent_hint=hint, user_id=user_id
             )

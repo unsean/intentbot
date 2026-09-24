@@ -45,15 +45,21 @@ Persistent memory covers your name and the bot's name across restarts.
 
 ## Thinking
 
-Every reply shows a `(thinking)` line above the answer:
+Every reply shows a `(thinking)` line above the answer — and it is
+**always honest pipeline state**, never generated text. A small model
+can't accurately verbalize its own reasoning (generated thoughts were
+~98% wrong, verified empirically), so the displayed thought reports what
+actually happened:
 
-- **Generative routes** — the transformer literally writes the thought:
-  every training target is `[think] reasoning [answer] reply`, so the
-  model emits reasoning first, then the answer. Context-conditioned
-  thoughts reference the previous turn ("earlier they said X, now Y").
-- **Deterministic routes** (math, names, tools, games) — the thought is
-  the real routing reason ("this is arithmetic - computing exactly").
-  Honest pipeline state, not fake reasoning.
+- classified intent + confidence ("chat · 6% sure · writing a reply")
+- context detection ("continuing from 'do you play guitar'")
+- the tool being called ("this needs live data - calling the weather tool")
+- the routing reason for deterministic answers ("computing exactly")
+
+The transformer's own generated reasoning (trained via
+`[think] <intent> | reasoning [answer] reply` targets, with the intent
+force-fed so it can't hallucinate the tag) is captured separately and
+shown only in `--think` debug mode, labeled `model reasoning:`.
 
 `python main.py --think` additionally prints the full decision trace:
 which rule fired, classifier top-3 intents, which route answered.
