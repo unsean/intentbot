@@ -151,8 +151,9 @@ and retrains automatically on next launch. Or force it with `--train`.
 
 ## Honest note
 
-The transformer is ~6M parameters trained from scratch on 60k local
-pairs — no pretrained weights. It writes real generated text and stays
-on-topic, but expect short, occasionally awkward replies. This project is
-about implementing the full pipeline (attention, masking, teacher forcing,
+The transformer is ~52M parameters (d_model=512, 6 encoder + 6 decoder
+layers, d_ff=2560) trained from scratch on 60k local pairs — no
+pretrained weights. It writes real generated text and stays on-topic,
+but expect short, occasionally awkward replies. This project is about
+implementing the full pipeline (attention, masking, teacher forcing,
 beam search), not competing with a large LM.

@@ -67,12 +67,16 @@ class TestSeq2SeqTransformer:
 
 
 class TestTrainGenerator:
+    _TINY = {"d_model": 32, "nhead": 2, "num_encoder_layers": 1,
+             "num_decoder_layers": 1, "dim_feedforward": 64}
+
     def test_loss_decreases(self):
         pairs = [("hi", "hello there"), ("bye", "see you later")] * 20
         v = GenVocab(min_freq=1)
         v.build([s for s, _ in pairs] + [t for _, t in pairs])
         model, result = train_generator(pairs, v, epochs=20, batch_size=8,
-                                        device="cpu", lr=1e-3)
+                                        device="cpu", lr=1e-3,
+                                        model_config=self._TINY)
         assert result.num_pairs == 40
         assert result.final_loss < 4.0  # must descend well below ln(vocab)
 
@@ -81,6 +85,6 @@ class TestTrainGenerator:
         v = GenVocab(min_freq=1)
         v.build([s for s, _ in pairs] + [t for _, t in pairs])
         model, _ = train_generator(pairs, v, epochs=3, batch_size=8,
-                                   device="cpu")
+                                   device="cpu", model_config=self._TINY)
         ids = model.generate(v.encode("hello", 48), max_len=10)
         assert isinstance(v.decode(ids), str)

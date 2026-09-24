@@ -151,11 +151,11 @@ class Seq2SeqTransformer(nn.Module):
     def __init__(
         self,
         vocab_size: int,
-        d_model: int = 256,
+        d_model: int = 512,
         nhead: int = 8,
-        num_encoder_layers: int = 3,
-        num_decoder_layers: int = 3,
-        dim_feedforward: int = 1024,
+        num_encoder_layers: int = 6,
+        num_decoder_layers: int = 6,
+        dim_feedforward: int = 2560,
         dropout: float = 0.1,
         max_len: int = 96,
     ) -> None:
@@ -533,6 +533,7 @@ def train_generator(
     lr: float = 3e-4,
     device: Optional[str] = None,
     logger=None,
+    model_config: Optional[Dict] = None,
 ) -> Tuple[Seq2SeqTransformer, GenTrainResult]:
     """Train the transformer with teacher forcing."""
     log = logger.info if logger else print
@@ -554,7 +555,7 @@ def train_generator(
         collate_fn=_collate,
     )
 
-    model = Seq2SeqTransformer(len(vocab)).to(dev)
+    model = Seq2SeqTransformer(len(vocab), **(model_config or {})).to(dev)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer, T_max=epochs * len(loader)

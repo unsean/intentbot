@@ -1657,10 +1657,14 @@ class ChatAssistant:
             raise ValueError("generative model is stale (data changed)")
         self.gen_vocab = GenVocab()
         self.gen_vocab.load_state_dict(config["vocab"])
-        self.gen_model = Seq2SeqTransformer(len(self.gen_vocab)).to(self.device)
+        # build + load into a local first: a shape mismatch (e.g. architecture
+        # changed since the checkpoint was saved) must leave gen_model unset
+        # so the caller retrains instead of running a half-loaded model
+        model = Seq2SeqTransformer(len(self.gen_vocab)).to(self.device)
         state = torch.load(model_path, map_location=self.device, weights_only=True)
-        self.gen_model.load_state_dict(state)
-        self.gen_model.eval()
+        model.load_state_dict(state)
+        model.eval()
+        self.gen_model = model
         logger.info("Generative model loaded from %s", model_path)
 
     @torch.no_grad()
