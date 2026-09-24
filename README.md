@@ -22,8 +22,13 @@ always hit the right function.
 
 ## Context
 
-The bot remembers what it asked you — if a tool needs an argument it asks,
-and your next message is the answer:
+The transformer reads the previous turn — its input is
+`intent | prev_user | prev_bot | message`, and it's trained on real
+multi-turn dialogues (`data/conversations.json`) plus auto-wrapped context
+pairs, so replies condition on what was just said, not just the last message.
+
+The bot also remembers what it asked you — if a tool needs an argument it
+asks, and your next message is the answer:
 
 ```
 You: weather
@@ -35,6 +40,33 @@ Bot: Tokyo, Japan: 19.1C, mostly clear, ...
 Same flow works for `search`, `wikipedia`, and `crypto price`. Short
 answers (≤2 words) feed the pending question; real commands interrupt it.
 Persistent memory covers your name and the bot's name across restarts.
+
+## Thinking (`--think`)
+
+```bash
+python main.py --think
+```
+
+Prints the real decision trace after each reply — which rule fired, the
+classifier's top-3 intents, and which route answered (tool / extension /
+transformer / LLM). Not a fake chain-of-thought: it's the actual pipeline.
+
+## Real LLM backend (optional)
+
+The transformer is trained from scratch — for real GPT-quality replies,
+point the bot at any OpenAI-compatible server (Ollama, LM Studio,
+llama.cpp, or hosted):
+
+```bash
+# example: Ollama running llama3.2 locally
+set AICHAT_LLM_URL=http://localhost:11434/v1
+set AICHAT_LLM_MODEL=llama3.2
+python main.py
+```
+
+When configured and reachable, open-domain replies go to the LLM (with
+real chat history); rules, tools, and the fallback transformer still run
+locally. Unset it and the bot is fully offline again.
 
 ## Run it
 
@@ -73,6 +105,8 @@ Generated replies stream token-by-token in both the CLI and the web UI.
 main.py                  # assistant logic, classifier, CLI
 generative.py            # transformer: vocab, training, beam search, streaming
 tools.py                 # live tools: search, wikipedia, weather, crypto, time
+llm.py                   # optional OpenAI-compatible LLM backend
+data/conversations.json  # multi-turn dialogues for context training
 web.py                   # Flask app (POST /chat, SSE /chat/stream, /status)
 templates/index.html     # dark web UI with live streaming
 data/intents.json        # core intents

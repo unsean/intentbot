@@ -363,11 +363,24 @@ def build_pairs(
     exclude_intents: Optional[set] = None,
     max_pairs: int = 60000,
     seed: int = 42,
+    conversations: Optional[List[dict]] = None,
+    context_ratio: float = 0.15,
 ) -> List[Tuple[str, str]]:
-    """Build (message, response) training pairs from intent data."""
+    """Build (source, response) training pairs from intent data.
+
+    Source format uses '|' as a separator:
+      no context:   "intent_tag | message"
+      with context: "intent_tag | prev_user | prev_bot | message"
+
+    `conversations` provides real multi-turn dialogues (each turn dict has
+    u/b keys); additionally a fraction of plain pairs get wrapped with a
+    random prior turn so the model learns to use — or ignore — context.
+    """
     exclude = exclude_intents or set()
     rng = random.Random(seed)
     pairs: List[Tuple[str, str]] = []
+    turn_pool: List[Tuple[str, str]] = []  # (user_msg, bot_resp) candidates
+
     for tag, texts in raw_texts_by_intent.items():
         if tag in exclude:
             continue
@@ -379,11 +392,30 @@ def build_pairs(
         if not resp:
             continue
         for text in texts:
-            # prepend the intent tag so generation is conditioned on the
-            # classified intent, not just the raw message
-            src = f"{tag} {text}"
             for r in rng.sample(resp, min(2, len(resp))):
-                pairs.append((src, r))
+                pairs.append((f"{tag} | {text}", r))
+                turn_pool.append((text, r))
+
+    # real multi-turn dialogues -> context-conditioned pairs
+    for convo in conversations or []:
+        turns = convo.get("turns", convo) if isinstance(convo, dict) else convo
+        for i in range(1, len(turns)):
+            prev_u, prev_b = turns[i - 1].get("u", ""), turns[i - 1].get("b", "")
+            cur_u, cur_b = turns[i].get("u", ""), turns[i].get("b", "")
+            if all((prev_u, prev_b, cur_u, cur_b)):
+                pairs.append((f"chat | {prev_u} | {prev_b} | {cur_u}", cur_b))
+
+    # wrap a fraction of plain pairs with a random prior turn — teaches the
+    # model the context format and to focus on the last turn
+    if turn_pool and context_ratio > 0:
+        n_ctx = int(len(pairs) * context_ratio)
+        plain = pairs[:]  # snapshot before adding wrapped variants
+        for _ in range(n_ctx):
+            src, tgt = rng.choice(plain)
+            pu, pb = rng.choice(turn_pool)
+            tag, msg = src.split(" | ", 1)
+            pairs.append((f"{tag} | {pu} | {pb} | {msg}", tgt))
+
     rng.shuffle(pairs)
     return pairs[:max_pairs]
 

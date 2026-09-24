@@ -34,6 +34,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 
 import tools
+from llm import LLMClient
 from generative import (
     UNK,
     GenTrainResult,
@@ -1147,6 +1148,11 @@ class ChatAssistant:
         # deterministic handlers (math, game, name memory, reset) still run
         # first since they compute real state, not canned text.
         self.generative_all = False
+        # --think mode: expose the real decision trace after each reply
+        self.think = False
+        self.last_trace: List[str] = []
+        # optional real-LLM backend (Ollama/LM Studio/OpenAI-compatible)
+        self.llm = LLMClient()
 
         self.intents: List[str] = []
         self.responses: Dict[str, List[str]] = {}
@@ -1179,7 +1185,8 @@ class ChatAssistant:
         saved model is stale."""
         h = hashlib.sha1()
         for path in [
-            self.intents_path, *self.extra_intents_paths, *self.extra_training_paths
+            self.intents_path, *self.extra_intents_paths, *self.extra_training_paths,
+            DATA_DIR / "conversations.json",
         ]:
             try:
                 with open(path, "rb") as f:
@@ -1532,11 +1539,24 @@ class ChatAssistant:
         all_texts = [t for texts in self.raw_texts.values() for t in texts]
         all_texts += [r for rs in self.responses.values() for r in rs]
         all_texts += list(self.raw_texts.keys())  # intent tags as conditioning tokens
+
+        convos: List[dict] = []
+        convo_path = DATA_DIR / "conversations.json"
+        if convo_path.exists():
+            convos = json.loads(
+                convo_path.read_text(encoding="utf-8")
+            ).get("conversations", [])
+        for c in convos:
+            for turn in c.get("turns", []):
+                all_texts += [turn.get("u", ""), turn.get("b", "")]
+        # separator + generic context tag used in context-conditioned pairs
+        all_texts += ["|", "chat"]
         self.gen_vocab.build(all_texts)
 
         pairs = build_pairs(
             self.documents, self.raw_texts, self.responses,
             exclude_intents=DYNAMIC_INTENTS, max_pairs=max_pairs,
+            conversations=convos,
         )
         logger.info("Generative training: %d pairs, vocab %d", len(pairs), len(self.gen_vocab))
         self.gen_model, result = train_generator(
@@ -1591,16 +1611,48 @@ class ChatAssistant:
                 self.gen_model.generate_beam(src, max_len=4, device=self.device)
         logger.info("Warmup inference done")
 
+    def _gen_context(self, user_id: str) -> str:
+        """Last turn as 'user | bot' — the context the transformer was
+        trained to read, so generation can condition on the conversation."""
+        hist = (self.current_context.get(user_id) or {}).get(
+            "conversation_history"
+        ) or []
+        last = hist[-1] if hist else None
+        if not last:
+            return ""
+        u, b = last.get("message"), last.get("bot")
+        return f"{u} | {b}" if (u and b) else (u or "")
+
     def _generate_reply(
         self,
         message: str,
         on_token=None,
         mode: str = "beam",
         intent_hint: Optional[str] = None,
+        user_id: str = "default",
     ) -> str:
-        # prefix with the intent tag when known — the model was trained on
-        # "intent_tag message" sources, so this steers the reply
-        src_text = f"{intent_hint} {message}" if intent_hint else message
+        # "intent | prev_user | prev_bot | message" — the model was trained
+        # on this layout, so it can condition on the previous turn
+        # real-LLM backend first (Ollama/OpenAI-compatible) when configured
+        if self.llm.configured and self.llm.available():
+            msgs = self._llm_messages(message, user_id)
+            self._tr(f"route: llm ({self.llm.model}, history={len(msgs)-2})")
+            text = self.llm.chat(msgs)
+            if text:
+                text = clean_reply(text)
+                if on_token:
+                    for word in text.split(" "):
+                        on_token(word + " ")
+                return text
+            logger.info("LLM call failed, falling back to transformer")
+
+        hint = intent_hint or "chat"
+        ctx_txt = self._gen_context(user_id)
+        src_text = (
+            f"{hint} | {ctx_txt} | {message}"
+            if ctx_txt
+            else f"{hint} | {message}"
+        )
         src = self.gen_vocab.encode(src_text, 48)
         if not src:
             return self._fallback_response(message, [])
@@ -1628,6 +1680,28 @@ class ChatAssistant:
         text = clean_reply(self.gen_vocab.decode(ids))
         return text or self._fallback_response(message, [])
 
+    def _llm_messages(
+        self, message: str, user_id: str
+    ) -> List[Dict[str, str]]:
+        """Build OpenAI-style messages: system prompt + real history + now."""
+        system = (
+            f"You are {self.ai_name}, a friendly concise chatbot. "
+            "Reply in 1-3 short sentences with a casual natural tone. "
+            "Match the user's language (English or Indonesian). "
+            "Do not mention being an AI unless asked."
+        )
+        msgs = [{"role": "system", "content": system}]
+        hist = (self.current_context.get(user_id) or {}).get(
+            "conversation_history"
+        ) or []
+        for h in hist[-6:]:
+            if h.get("message"):
+                msgs.append({"role": "user", "content": h["message"]})
+            if h.get("bot"):
+                msgs.append({"role": "assistant", "content": h["bot"]})
+        msgs.append({"role": "user", "content": message})
+        return msgs
+
     def _gen_has_signal(self, message: str) -> bool:
         """True if the message has at least one known vocab word — prevents
         the transformer from generating confident nonsense on gibberish."""
@@ -1646,6 +1720,26 @@ class ChatAssistant:
         probs = torch.softmax(self.model(x), dim=1)
         confidence, idx = torch.max(probs, 1)
         return self.intents[idx.item()], float(confidence.item())
+
+    @torch.no_grad()
+    def _predict_topk(self, message: str, k: int = 3) -> List[Tuple[str, float]]:
+        """Top-k intents with confidences — used by --think traces."""
+        if self.model is None:
+            return []
+        bow = self.preprocessor.vectorize(message)
+        x = torch.tensor([bow], dtype=torch.float32, device=self.device)
+        self.model.eval()
+        probs = torch.softmax(self.model(x), dim=1)
+        vals, idxs = probs.topk(min(k, len(self.intents)), dim=1)
+        return [
+            (self.intents[i], float(v))
+            for v, i in zip(vals[0].tolist(), idxs[0].tolist())
+        ]
+
+    def _tr(self, text: str) -> None:
+        """Append a reasoning step to last_trace (only in --think mode)."""
+        if self.think:
+            self.last_trace.append(text)
 
     def _suggest_intents(self, message: str, k: int = 2) -> List[str]:
         """Keyword-overlap suggestions for low-confidence inputs."""
@@ -1673,13 +1767,16 @@ class ChatAssistant:
             return ChatResponse("Say something and I'll do my best!", "empty", 0.0)
 
         ctx = self._context_for(user_id)
+        self.last_trace = []
 
         # 1. Built-in commands
         lower = message.lower().strip()
         if lower in RESET_COMMANDS:
+            self._tr("rule: reset command")
             text = self.reset_context(user_id)
             return self._finalize(message, text, "reset", 1.0, {}, user_id)
         if lower in HELP_COMMANDS:
+            self._tr("rule: help command")
             text = self._help_response()
             return self._finalize(message, text, "help", 1.0, {}, user_id)
 
@@ -1688,6 +1785,7 @@ class ChatAssistant:
         if ctx.get("active_game", {}).get("type") == "number":
             text = self._handle_number_game_turn(message, user_id)
             if text is not None:
+                self._tr("state: number game turn")
                 return self._finalize(message, text, "play_game", 1.0, {}, user_id)
         elif any(k in lower for k in ("quit game", "stop game", "end game")):
             text = "No game is running right now. Say 'play a game' to start one!"
@@ -1699,14 +1797,17 @@ class ChatAssistant:
         if pending:
             ctx["pending"] = None
             if not self._looks_like_new_command(message, lower, pending["intent"]):
+                self._tr(f"pending: answering {pending['intent']} with {message!r}")
                 text = pending["fn"](message)
                 return self._finalize(
                     message, text, pending["intent"], 1.0, {}, user_id
                 )
+            self._tr(f"pending {pending['intent']} dropped: new command")
 
         # 3. Name capture / query
         name = self._extract_name(message)
         if name:
+            self._tr(f"rule: name capture -> {name!r}")
             self.user_profile["name"] = name
             self._save_user_profile()
             text = f"Nice to meet you, {name}! I'll remember your name."
@@ -1723,6 +1824,7 @@ class ChatAssistant:
 
         ai_name = self._extract_ai_name(message)
         if ai_name:
+            self._tr(f"rule: bot rename -> {ai_name!r}")
             ai_name = ai_name.capitalize()
             self.ai_name = ai_name
             self.user_profile["ai_name"] = ai_name
@@ -1739,6 +1841,7 @@ class ChatAssistant:
 
         # 4. Math expressions go straight to the safe evaluator
         if looks_like_math(message):
+            self._tr("rule: math -> AST evaluator")
             text = calculate_math(message)
             return self._finalize(message, text, "math_question", 1.0, {}, user_id)
 
@@ -1746,10 +1849,12 @@ class ChatAssistant:
         tool = self._detect_tool_call(message, user_id)
         if tool is not None:
             intent_tag, text = tool
+            self._tr(f"rule: tool -> {intent_tag}")
             return self._finalize(message, text, intent_tag, 1.0, {}, user_id)
 
         # 5. Follow-up requests ("another", "more", "again")
         if lower.split()[0] in FOLLOWUP_TRIGGERS or lower in FOLLOWUP_TRIGGERS:
+            self._tr("rule: follow-up trigger")
             if self.generative_all and self.generative_ready:
                 # regenerate from the last real user message
                 hist = ctx.get("conversation_history") or []
@@ -1765,7 +1870,8 @@ class ChatAssistant:
                 )
                 if last_msg and self._gen_has_signal(last_msg):
                     text = self._generate_reply(
-                        last_msg, on_token, intent_hint=last_intent
+                        last_msg, on_token, intent_hint=last_intent,
+                        user_id=user_id,
                     )
                     return self._finalize(message, text, "followup", 0.9, {}, user_id)
             text = self._handle_followup(lower, user_id)
@@ -1775,22 +1881,38 @@ class ChatAssistant:
         # 6. Rule-based overrides for high-precision phrases
         intent_tag = self._rule_override(lower)
         if intent_tag:
+            self._tr(f"rule override -> {intent_tag}")
             entities = self._extract_entities(message, intent_tag)
             self._update_context(intent_tag, message, user_id)
             if self.generative_all and self.generative_ready:
-                text = self._generate_reply(message, on_token, intent_hint=intent_tag)
+                text = self._generate_reply(
+                    message, on_token, intent_hint=intent_tag, user_id=user_id
+                )
             else:
                 text = self._build_response(intent_tag, entities, user_id, message)
             return self._finalize(message, text, intent_tag, 1.0, entities, user_id)
 
         # 7. Neural classifier
         intent_tag, confidence = self._predict(message)
+        if self.think:
+            top3 = ", ".join(
+                f"{t}={c:.2f}" for t, c in self._predict_topk(message)
+            )
+            self._tr(f"classifier top3: {top3}")
 
         if confidence < self.confidence_threshold:
             if self.generative_ready and self._gen_has_signal(message):
-                text = self._generate_reply(message, on_token, intent_hint=intent_tag)
+                has_ctx = bool(self._gen_context(user_id))
+                self._tr(
+                    f"route: generative (conf {confidence:.2f} < "
+                    f"{self.confidence_threshold}, hint={intent_tag}, ctx={has_ctx})"
+                )
+                text = self._generate_reply(
+                    message, on_token, intent_hint=intent_tag, user_id=user_id
+                )
                 self._update_context("generative", message, user_id)
                 return self._finalize(message, text, "generative", confidence, {}, user_id)
+            self._tr(f"route: fallback (conf {confidence:.2f})")
             suggestions = self._suggest_intents(message)
             text = self._fallback_response(message, suggestions)
             return self._finalize(message, text, "fallback", confidence, {}, user_id)
@@ -1807,11 +1929,14 @@ class ChatAssistant:
             and intent_tag not in DYNAMIC_INTENTS
             and (self.generative_all or intent_tag in GENERATIVE_INTENTS)
         ):
+            has_ctx = bool(self._gen_context(user_id))
+            self._tr(f"route: generative (hint={intent_tag}, ctx={has_ctx})")
             text = self._generate_reply(
-                message, on_token, intent_hint=intent_tag
+                message, on_token, intent_hint=intent_tag, user_id=user_id
             )
             return self._finalize(message, text, intent_tag, confidence, entities, user_id)
 
+        self._tr(f"route: extension/canned -> {intent_tag}")
         text = self._build_response(intent_tag, entities, user_id, message)
         return self._finalize(message, text, intent_tag, confidence, entities, user_id)
 
@@ -1894,6 +2019,11 @@ class ChatAssistant:
             return True
         if len(lower.split()) <= 2:
             return False
+        if self._rule_override(lower):
+            return True
+        suggestions = self._suggest_intents(message)
+        if suggestions and pending_intent not in suggestions:
+            return True
         tag, conf = self._predict(message)
         return conf >= 0.55 and tag != pending_intent
 
@@ -2270,6 +2400,17 @@ class ChatAssistant:
         user_id: str,
     ) -> ChatResponse:
         text = to_ascii(text)  # safe rendering on non-UTF-8 consoles
+        # record the bot side of the turn so generative context has both halves
+        ctx = self.current_context.get(user_id)
+        if ctx is not None:
+            hist = ctx.setdefault("conversation_history", [])
+            if hist and hist[-1].get("message") == message and "bot" not in hist[-1]:
+                hist[-1]["bot"] = text
+            else:
+                hist.append(
+                    {"intent": intent_tag, "message": message, "bot": text}
+                )
+            del hist[:-10]
         turn = ConversationTurn(
             user_input=message,
             bot_response=text,
@@ -2387,6 +2528,9 @@ def interactive_chat(assistant: ChatAssistant) -> None:
     import time
 
     print(f"{assistant.ai_name} is ready. Type 'quit' to exit, 'help' for capabilities.")
+    if assistant.llm.configured:
+        status = "online" if assistant.llm.available() else "offline - using transformer"
+        print(f"(LLM backend: {assistant.llm.model} @ {assistant.llm.url} — {status})")
     print("=" * 60)
     while True:
         try:
@@ -2423,6 +2567,8 @@ def interactive_chat(assistant: ChatAssistant) -> None:
         else:
             print(f"\n{assistant.ai_name}: {response.text}", flush=True)
         print(f"   [{response.intent} | {response.confidence:.2f}]", flush=True)
+        for step in assistant.last_trace:
+            print(f"   [think] {step}", flush=True)
 
 
 def main() -> None:
@@ -2436,6 +2582,9 @@ def main() -> None:
     if "--gen-all" in args:
         assistant.generative_all = True
         print("(full generative mode — the transformer writes every reply)")
+    if "--think" in args:
+        assistant.think = True
+        print("(think mode — shows the decision trace after each reply)")
     interactive_chat(assistant)
 
 
