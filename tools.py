@@ -11,6 +11,7 @@ argument, times out fast, and degrades to a friendly string on failure.
 
 import json
 import logging
+import random
 import re
 import urllib.parse
 import urllib.request
@@ -237,3 +238,50 @@ def datetime_info(message: str = "", **_) -> str:
         f"It's {now.strftime('%A, %B %d, %Y')} - "
         f"local time {now.strftime('%H:%M')}."
     )
+
+
+# ---------------------------------------------------------------------------
+# Chance tools — real randomness for decisions
+# ---------------------------------------------------------------------------
+
+def coin_flip(message: str = "", **_) -> str:
+    side = random.choice(["Heads", "Tails"])
+    return f"I flipped a coin: {side}."
+
+
+_DICE_RE = re.compile(r"(\d+)?\s*d\s*(\d+)", re.IGNORECASE)
+_SIDES_RE = re.compile(r"(\d+)\s*(?:-|\s)?sided", re.IGNORECASE)
+
+
+def roll_dice(message: str = "", **_) -> str:
+    """'roll a dice', 'roll 2d6', 'roll a 20-sided die'."""
+    m = _DICE_RE.search(message or "")
+    n, sides = (int(m.group(1) or 1), int(m.group(2))) if m else (1, 6)
+    if not m:
+        s = _SIDES_RE.search(message or "")
+        if s:
+            sides = int(s.group(1))
+    n = max(1, min(n, 20))
+    sides = max(2, min(sides, 1000))
+    rolls = [random.randint(1, sides) for _ in range(n)]
+    total = sum(rolls)
+    if n == 1:
+        return f"I rolled a d{sides}: {rolls[0]}."
+    return f"I rolled {n}d{sides}: {rolls} (total {total})."
+
+
+_RNG_RE = re.compile(
+    r"(?:between|from)\s+(-?\d+)\s+(?:and|to|-)\s+(-?\d+)", re.IGNORECASE
+)
+
+
+def random_number(message: str = "", **_) -> str:
+    """'pick a number between 1 and 10', 'random number from 5 to 50'."""
+    lo, hi = 1, 100
+    m = _RNG_RE.search(message or "")
+    if m:
+        lo, hi = int(m.group(1)), int(m.group(2))
+        if lo > hi:
+            lo, hi = hi, lo
+        hi = min(hi, lo + 10**9)
+    return f"Random number between {lo} and {hi}: {random.randint(lo, hi)}."

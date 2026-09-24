@@ -790,6 +790,22 @@ def _eval_math(node: ast.AST) -> float:
     raise ValueError("unsupported expression")
 
 
+# 'play guitar' / 'play football' are NOT game requests — only bare
+# 'lets play', 'a game', guessing, or Indonesian 'main' variants are.
+_GAME_OK_RE = re.compile(
+    r"\bgames?\b|"
+    r"\b(?:let'?s|wanna|want to|can we|shall we|mau|yuk|ayo)\s+"
+    r"(?:play|main)\b|"
+    r"\b(?:play|main)\s*(?:with me|together|dong|yuk|aja|yok)?\s*$|"
+    r"\bguessing\b|\btebak\b",
+    re.IGNORECASE,
+)
+
+
+def _wants_game(lower: str) -> bool:
+    return bool(_GAME_OK_RE.search(lower))
+
+
 _PENDING_FILLER = re.compile(
     r"^\s*(?:i think|i guess|maybe|probably|perhaps|kayaknya|kayak|"
     r"sepertinya|mungkin|gimana kalau|how about|what about|try|umm?|uh)\s+",
@@ -974,6 +990,21 @@ _TOOL_DATETIME_RE = re.compile(
     r"jam berapa|hari apa|tanggal berapa",
     re.IGNORECASE,
 )
+_TOOL_CHANCE_RE = re.compile(
+    r"flip a coin|coin flip|toss a coin|lempar koin|koin|"
+    r"roll (?:a |the |two )?dice|roll \d*d\d+|roll a \d+-sided|"
+    r"dice|dad|dadu|"
+    r"(?:pick|choose|random) (?:a )?number|random number|"
+    r"number between|angka random|nomor acak",
+    re.IGNORECASE,
+)
+_TOOL_STATS_RE = re.compile(
+    r"what can you do|your (?:capabilit|feature|vocab|stats)|"
+    r"how (?:smart|big) are you|how many (?:intents|words|things)|"
+    r"apa yang bisa kamu|kamu bisa apa|fitur kamu|about yourself|"
+    r"who are you|what are you\b",
+    re.IGNORECASE,
+)
 
 
 def _known_coin(message: str) -> Optional[str]:
@@ -1124,7 +1155,7 @@ DYNAMIC_INTENTS = {
     "user_name_setting", "name_introduction", "bot_name_query",
     "reset", "help", "generative", "followup", "empty", "fallback",
     "web_search", "wiki_lookup", "crypto_price", "datetime_query",
-    "weather",
+    "weather", "coin_flip", "roll_dice", "random_number", "bot_stats",
 }
 
 
@@ -1940,7 +1971,12 @@ class ChatAssistant:
             intent_tag, text = tool
             self._tr(f"rule: tool -> {intent_tag}")
             if not self.last_thought:
-                self.last_thought = f"this needs live data - calling the {intent_tag} tool."
+                if intent_tag in ("coin_flip", "roll_dice", "random_number"):
+                    self.last_thought = "they want a random outcome - generating a real one."
+                elif intent_tag == "bot_stats":
+                    self.last_thought = "they asked about me - reporting the real numbers."
+                else:
+                    self.last_thought = f"this needs live data - calling the {intent_tag} tool."
             return self._finalize(message, text, intent_tag, 1.0, {}, user_id)
 
         # 5. Follow-up requests ("another", "more", "again")
@@ -2025,6 +2061,16 @@ class ChatAssistant:
             text = self._fallback_response(message, suggestions)
             return self._finalize(message, text, "fallback", confidence, {}, user_id)
 
+        # classifier sometimes maps 'play guitar' to play_game — only real
+        # game requests get the game handler; the rest fall through to chat
+        if (
+            intent_tag == "play_game"
+            and self.generative_ready
+            and not _wants_game(lower)
+        ):
+            self._tr("play_game rejected: no game keyword")
+            intent_tag = "chat"
+
         entities = self._extract_entities(message, intent_tag)
         if "HUMAN" in entities:
             self.user_profile["name"] = entities["HUMAN"][0]
@@ -2099,6 +2145,14 @@ class ChatAssistant:
             fired = ("crypto_price", tools.crypto_price)
         elif _TOOL_DATETIME_RE.search(lower):
             return "datetime_query", tools.datetime_info(message)
+        elif _TOOL_STATS_RE.search(lower):
+            return "bot_stats", self._stats_text(user_id)
+        elif _TOOL_CHANCE_RE.search(lower):
+            if re.search(r"coin|koin|flip|toss|lempar", lower):
+                return "coin_flip", tools.coin_flip(message)
+            if re.search(r"number|angka|nomor|between", lower):
+                return "random_number", tools.random_number(message)
+            return "roll_dice", tools.roll_dice(message)
         if fired is None:
             return None
         intent, fn = fired
@@ -2111,6 +2165,28 @@ class ChatAssistant:
         """Store a pending question — the next user message is its answer."""
         self._context_for(user_id)["pending"] = {"intent": intent, "fn": fn}
         return ask
+
+    def _stats_text(self, user_id: str) -> str:
+        """Honest self-report: real counts from the loaded models."""
+        n_intents = len(self.intents)
+        vocab = len(self.gen_vocab) if self.gen_vocab else 0
+        params = (
+            sum(p.numel() for p in self.gen_model.parameters())
+            if self.gen_model else 0
+        )
+        msgs = len(
+            (self.current_context.get(user_id) or {}).get(
+                "conversation_history", []
+            )
+        )
+        return (
+            f"I'm {self.ai_name} - a from-scratch PyTorch build: a "
+            f"{n_intents}-intent classifier plus a ~{params/1e6:.0f}M-param "
+            f"transformer (vocab {vocab}) that thinks then replies. I can "
+            f"chat, do math, search the web, check weather/crypto/time, "
+            f"flip coins, roll dice, remember your name, and play number "
+            f"games. This chat: {msgs} messages so far."
+        )
 
     def _looks_like_new_command(
         self, message: str, lower: str, pending_intent: str
@@ -2145,12 +2221,20 @@ class ChatAssistant:
         return conf >= 0.55 and tag != pending_intent
 
     def _is_bot_name_query(self, lower: str) -> bool:
-        return any(p in lower for p in (
+        if any(p in lower for p in (
             "what is your name", "what's your name", "whats your name",
+            "what is ur name", "what is u name", "whats ur name",
+            "whats u name", "what's ur name", "what's u name",
             "what should i call you", "what do they call you",
             "what are you called", "do you have a name",
             "tell me your name", "what are you named",
-        ))
+            "ur name", "u name",
+        )):
+            return True
+        # "siapa namamu", "nama kamu apa", ...
+        return ("nama" in lower or "name" in lower) and any(
+            p in lower for p in ("kamu", "lu", "lo", "mu", "your", "ur")
+        )
 
     def _is_name_query(self, lower: str) -> bool:
         return (
