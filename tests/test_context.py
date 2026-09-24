@@ -34,6 +34,21 @@ class TestPendingContext:
         a.handle_message("hello there", "u1")
         assert a.current_context["u1"]["pending"] is None
 
+    def test_pending_strips_hedging(self):
+        a = _assistant()
+        a.handle_message("weather", "u1")
+        with patch("main.tools.get_weather", return_value="ok") as gw:
+            a.handle_message("i think Mexico", "u1")
+        gw.assert_called_once_with("weather in Mexico")
+
+    def test_pending_survives_tool_failure(self):
+        a = _assistant()
+        a.handle_message("weather", "u1")
+        fail = "I couldn't find a place called 'nowhere'."
+        with patch("main.tools.get_weather", return_value=fail):
+            a.handle_message("nowhere", "u1")
+        assert a.current_context["u1"]["pending"] is not None
+
 
 class TestHistoryRecording:
     def test_bot_side_recorded(self):

@@ -22,6 +22,8 @@ class TestCalculateMath:
             ("2 power 10", 1024),
             ("15 mod 4", 3),
             ("what is 10 percent of 200", 20),
+            ("15% of 240", 36),
+            ("20 percent of 150", 30),
             ("5 x 3", 15),
             ("(2 + 3) * 4", 20),
         ],

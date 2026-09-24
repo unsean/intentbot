@@ -356,6 +356,32 @@ class GenTrainResult:
     vocab_size: int
 
 
+# Indonesian markers — replies containing several of these are dropped from
+# generative targets. The classifier still understands Indonesian input,
+# but the generator learns to answer in English so a small model doesn't
+# have to split capacity across two languages.
+_ID_MARKERS = {
+    "aku", "saya", "kamu", "kau", "gue", "gw", "lo", "apa", "kabar", "dong",
+    "gak", "nggak", "ga", "enggak", "tidak", "bukan", "banget", "lagi",
+    "pengen", "ngobrol", "hari", "ini", "itu", "siang", "malam", "pagi",
+    "wkwk", "mantap", "kok", "udah", "sudah", "belum", "jadi", "mau",
+    "bisa", "kasih", "makasih", "terima", "baik", "sekali", "juga", "tau",
+    "tahu", "tapi", "atau", "untuk", "dari", "dengan", "yang", "kita",
+    "mereka", "dia", "nya", "lah", "sih", "nih", "yuk", "aja", "emang",
+    "memang", "kalo", "kalau", "gimana", "kenapa", "dimana", "kemana",
+    "berapa", "siapa", "punya", "adalah", "sedang", "pernah", "selalu",
+    "sering", "jarang", "enak", "seru", "asik", "asyik", "capek",
+    "ngantuk", "laper", "lapar", "gabut", "betah", "sayang", "cinta",
+    "suka", "benci", "senang", "sedih", "bahagia", "marah", "kesal",
+}
+
+
+def _is_indonesian(text: str) -> bool:
+    """Heuristic: 2+ Indonesian marker words => treat as Indonesian."""
+    words = {w.lower() for w in gen_tokenize(text)}
+    return len(words & _ID_MARKERS) >= 2
+
+
 _THOUGHT_TEMPLATES = [
     "intent is {tag}. they mention {kw}. reply briefly and stay on topic.",
     "the topic is {kw} under {tag}. acknowledge it, add one useful point.",
@@ -424,10 +450,11 @@ def build_pairs(
     for tag, texts in raw_texts_by_intent.items():
         if tag in exclude:
             continue
-        # skip template responses — the model would learn to emit %%X%%
+        # skip template responses and Indonesian replies — the model would
+        # learn to emit %%X%% or mix languages
         resp = [
             r for r in responses.get(tag, [])
-            if r.strip() and "%%" not in r
+            if r.strip() and "%%" not in r and not _is_indonesian(r)
         ]
         if not resp:
             continue
@@ -444,7 +471,7 @@ def build_pairs(
             prev_u, prev_b = turns[i - 1].get("u", ""), turns[i - 1].get("b", "")
             cur = turns[i]
             cur_u, cur_b = cur.get("u", ""), cur.get("b", "")
-            if all((prev_u, prev_b, cur_u, cur_b)):
+            if all((prev_u, prev_b, cur_u, cur_b)) and not _is_indonesian(cur_b):
                 thought = cur.get("t") or _make_ctx_thought(prev_u, cur_u, rng)
                 # oversample real dialogues — hundreds of context pairs get
                 # drowned by tens of thousands of plain pairs otherwise

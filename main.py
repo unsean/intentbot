@@ -730,6 +730,7 @@ _NUMBER = r"(\d+(?:\.\d+)?)"
 # Imperative forms where infix word-mapping gets the operand order wrong:
 # "subtract 5 from 20" -> "20 - 5", "multiply 6 by 7" -> "6 * 7", etc.
 _IMPERATIVE_RULES = [
+    (re.compile(rf"\b{_NUMBER}\s*(?:%|percent)\s*of\s*{_NUMBER}"), r"(\1 / 100) * \2"),
     (re.compile(rf"\badd\s+{_NUMBER}\s+(?:to|and)\s+{_NUMBER}"), r"\1 + \2"),
     (re.compile(rf"\bsubtract\s+{_NUMBER}\s+from\s+{_NUMBER}"), r"\2 - \1"),
     (re.compile(rf"\b{_NUMBER}\s+subtracted\s+from\s+{_NUMBER}"), r"\2 - \1"),
@@ -787,6 +788,32 @@ def _eval_math(node: ast.AST) -> float:
             raise ValueError("unsupported unary operator")
         return op(_eval_math(node.operand))
     raise ValueError("unsupported expression")
+
+
+_PENDING_FILLER = re.compile(
+    r"^\s*(?:i think|i guess|maybe|probably|perhaps|kayaknya|kayak|"
+    r"sepertinya|mungkin|gimana kalau|how about|what about|try|umm?|uh)\s+",
+    re.IGNORECASE,
+)
+
+
+def _clean_pending_answer(message: str) -> str:
+    """Strip hedging fillers from a pending-question answer so tools get
+    the bare argument: 'i think Mexico' -> 'Mexico'."""
+    cleaned = _PENDING_FILLER.sub("", message)
+    return cleaned.strip(" .!?\"'") or message
+
+
+def _tool_failed(text: str) -> bool:
+    """Tool responses that mean 'no result' — keep pending open for retry."""
+    t = text.lower()
+    return any(
+        k in t
+        for k in (
+            "couldn't find", "could not find", "couldn't reach",
+            "could not reach", "no results", "try again",
+        )
+    )
 
 
 def calculate_math(message: str = "") -> str:
@@ -1823,12 +1850,16 @@ class ChatAssistant:
         if pending:
             ctx["pending"] = None
             if not self._looks_like_new_command(message, lower, pending["intent"]):
-                self._tr(f"pending: answering {pending['intent']} with {message!r}")
+                answer = _clean_pending_answer(message)
+                self._tr(f"pending: answering {pending['intent']} with {answer!r}")
                 self.last_thought = (
                     f"I asked for {pending['intent']} input earlier - "
-                    f"'{message[:30]}' is the answer."
+                    f"'{answer[:30]}' is the answer."
                 )
-                text = pending["fn"](message)
+                text = pending["fn"](answer)
+                if _tool_failed(text):
+                    # keep the question open so the next message can retry
+                    ctx["pending"] = pending
                 return self._finalize(
                     message, text, pending["intent"], 1.0, {}, user_id
                 )
@@ -2058,6 +2089,10 @@ class ChatAssistant:
         """True if this message abandons a pending question and starts a
         new command/topic instead. Short answers (<=2 words) are almost
         always the pending answer, not a new command."""
+        # strip hedging first: "i think Mexico" should be judged as "Mexico"
+        cleaned = _clean_pending_answer(message)
+        if cleaned != message:
+            message, lower = cleaned, cleaned.lower()
         if lower in SHORTCUT_INTENTS or lower in RESET_COMMANDS or lower in HELP_COMMANDS:
             return True
         if looks_like_math(message):

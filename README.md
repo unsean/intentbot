@@ -16,6 +16,7 @@ model can't compute those, so we don't ask it to.
 - `weather in X` / `cuaca di X` — real conditions via Open-Meteo
 - `bitcoin price` / `berapa harga eth` — live prices via CoinGecko
 - `what time is it` / `jam berapa` — real date & time
+- `15% of 240`, `what is 12 times 8` — real math via safe AST eval
 
 All free APIs, no keys needed. Tool commands run deterministically so they
 always hit the right function.
@@ -28,17 +29,18 @@ multi-turn dialogues (`data/conversations.json`) plus auto-wrapped context
 pairs, so replies condition on what was just said, not just the last message.
 
 The bot also remembers what it asked you — if a tool needs an argument it
-asks, and your next message is the answer:
+asks, and your next message is the answer. Hedged answers get cleaned
+("i think Mexico" → Mexico), a failed lookup keeps the question open for
+a retry, and real commands interrupt cleanly.
 
 ```
 You: weather
 Bot: Which city? Try 'Jakarta'.
-You: tokyo          ← understood as the pending answer
+You: i think tokyo    ← filler stripped, treated as the answer
 Bot: Tokyo, Japan: 19.1C, mostly clear, ...
 ```
 
-Same flow works for `search`, `wikipedia`, and `crypto price`. Short
-answers (≤2 words) feed the pending question; real commands interrupt it.
+Same flow works for `search`, `wikipedia`, and `crypto price`.
 Persistent memory covers your name and the bot's name across restarts.
 
 ## Thinking
@@ -59,9 +61,14 @@ which rule fired, classifier top-3 intents, which route answered.
 ## More data
 
 `scripts/gen_conversations.py` generates multi-turn dialogues
-combinatorially (topics x phrasings x advice scenarios) into
-`data/conversations_gen.json` — rerun it after editing the templates to
-grow the context dataset. Both conversation files feed the transformer.
+combinatorially (topics x phrasings x advice scenarios x contrastive
+follow-ups) into `data/conversations_gen.json` — rerun it after editing
+the templates to grow the context dataset. Both conversation files feed
+the transformer.
+
+Note: the classifier understands Indonesian, but generative targets are
+English-only — a small model produces cleaner text when it isn't
+splitting capacity across two languages.
 
 ## Real LLM backend (optional)
 
