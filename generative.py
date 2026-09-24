@@ -398,7 +398,7 @@ def build_pairs(
     seed: int = 42,
     conversations: Optional[List[dict]] = None,
     context_ratio: float = 0.15,
-    convo_weight: int = 4,
+    convo_weight: int = 6,
 ) -> List[Tuple[str, str]]:
     """Build (source, response) training pairs from intent data.
 

@@ -1081,19 +1081,6 @@ TOPIC_MAP = {
     "travel_talk": "travel",
 }
 
-# Open-domain intents answered by the generative transformer when available.
-GENERATIVE_INTENTS = {
-    "small_talk_general", "daily_routine_chat", "feelings_mood_checkin",
-    "work_career_chat", "school_study_chat", "hobbies_daily_chat",
-    "family_relationships_chat", "friends_social_chat", "shopping_chat",
-    "entertainment_movies_chat", "entertainment_games_chat",
-    "news_current_events_chat", "sports_discussion", "history_questions",
-    "music_talk", "food_talk", "travel_talk", "technology_talk",
-    "health_fitness", "cooking_daily_chat", "sleep_health_chat",
-    "motivation_encouragement_chat", "learning_programming_chat",
-    "language_learning", "emotion_support",
-}
-
 # Short-reply intents whose right answer depends entirely on context —
 # routed to the generator when a conversation thread is active.
 CONTEXT_DEPENDENT_INTENTS = {
@@ -1102,7 +1089,8 @@ CONTEXT_DEPENDENT_INTENTS = {
 }
 
 # Intents whose replies are computed by rules/extensions — never used as
-# generative training targets, and never generated even in --gen-all mode.
+# generative training targets, and never generated (they compute real
+# state: math, names, games, tools). Everything else is generated.
 DYNAMIC_INTENTS = {
     "play_game", "productivity_tips", "study_habits", "math_question",
     "name_setup", "name_query", "ai_name_setup", "ai_name_setting",
@@ -1154,7 +1142,7 @@ class ChatAssistant:
         # When True, the transformer writes every conversational reply —
         # deterministic handlers (math, game, name memory, reset) still run
         # first since they compute real state, not canned text.
-        self.generative_all = False
+
         # --think mode: expose the real decision trace after each reply
         self.think = False
         self.last_trace: List[str] = []
@@ -1795,8 +1783,10 @@ class ChatAssistant:
 
         on_token: optional callable receiving text fragments as the
         generative model produces them (word-by-word streaming)."""
+        self.last_thought = ""
         message = (message or "").strip()[:MAX_INPUT_CHARS]
         if not message:
+            self.last_thought = "empty message - prompting for input."
             return ChatResponse("Say something and I'll do my best!", "empty", 0.0)
 
         ctx = self._context_for(user_id)
@@ -1806,10 +1796,12 @@ class ChatAssistant:
         lower = message.lower().strip()
         if lower in RESET_COMMANDS:
             self._tr("rule: reset command")
+            self.last_thought = "they asked for a fresh start - wiping game state and context."
             text = self.reset_context(user_id)
             return self._finalize(message, text, "reset", 1.0, {}, user_id)
         if lower in HELP_COMMANDS:
             self._tr("rule: help command")
+            self.last_thought = "they want to know what I can do - listing real capabilities."
             text = self._help_response()
             return self._finalize(message, text, "help", 1.0, {}, user_id)
 
@@ -1819,6 +1811,7 @@ class ChatAssistant:
             text = self._handle_number_game_turn(message, user_id)
             if text is not None:
                 self._tr("state: number game turn")
+                self.last_thought = "a number game is running - checking the guess against the hidden number."
                 return self._finalize(message, text, "play_game", 1.0, {}, user_id)
         elif any(k in lower for k in ("quit game", "stop game", "end game")):
             text = "No game is running right now. Say 'play a game' to start one!"
@@ -1831,6 +1824,10 @@ class ChatAssistant:
             ctx["pending"] = None
             if not self._looks_like_new_command(message, lower, pending["intent"]):
                 self._tr(f"pending: answering {pending['intent']} with {message!r}")
+                self.last_thought = (
+                    f"I asked for {pending['intent']} input earlier - "
+                    f"'{message[:30]}' is the answer."
+                )
                 text = pending["fn"](message)
                 return self._finalize(
                     message, text, pending["intent"], 1.0, {}, user_id
@@ -1841,12 +1838,14 @@ class ChatAssistant:
         name = self._extract_name(message)
         if name:
             self._tr(f"rule: name capture -> {name!r}")
+            self.last_thought = "they're telling me their name - saving it to their profile."
             self.user_profile["name"] = name
             self._save_user_profile()
             text = f"Nice to meet you, {name}! I'll remember your name."
             return self._finalize(message, text, "name_setup", 1.0, {"HUMAN": [name]}, user_id)
 
         if self._is_name_query(lower):
+            self.last_thought = "they're asking their own name - reading it from the profile."
             name = self.user_profile.get("name")
             text = (
                 f"Your name is {name}."
@@ -1858,6 +1857,7 @@ class ChatAssistant:
         ai_name = self._extract_ai_name(message)
         if ai_name:
             self._tr(f"rule: bot rename -> {ai_name!r}")
+            self.last_thought = f"they want to rename me - saving '{ai_name}' to the profile."
             ai_name = ai_name.capitalize()
             self.ai_name = ai_name
             self.user_profile["ai_name"] = ai_name
@@ -1866,6 +1866,7 @@ class ChatAssistant:
             return self._finalize(message, text, "ai_name_setup", 1.0, {"AI_NAME": [ai_name]}, user_id)
 
         if self._is_bot_name_query(lower):
+            self.last_thought = "they're asking my name - reporting the stored one."
             text = (
                 f"My name is {self.ai_name}. You can rename me by saying "
                 f"'your name is X'."
@@ -1875,6 +1876,7 @@ class ChatAssistant:
         # 4. Math expressions go straight to the safe evaluator
         if looks_like_math(message):
             self._tr("rule: math -> AST evaluator")
+            self.last_thought = "this is arithmetic - computing it exactly, not guessing."
             text = calculate_math(message)
             return self._finalize(message, text, "math_question", 1.0, {}, user_id)
 
@@ -1883,12 +1885,15 @@ class ChatAssistant:
         if tool is not None:
             intent_tag, text = tool
             self._tr(f"rule: tool -> {intent_tag}")
+            if not self.last_thought:
+                self.last_thought = f"this needs live data - calling the {intent_tag} tool."
             return self._finalize(message, text, intent_tag, 1.0, {}, user_id)
 
         # 5. Follow-up requests ("another", "more", "again")
         if lower.split()[0] in FOLLOWUP_TRIGGERS or lower in FOLLOWUP_TRIGGERS:
             self._tr("rule: follow-up trigger")
-            if self.generative_all and self.generative_ready:
+            self.last_thought = "they want more on the previous topic - regenerating from it."
+            if self.generative_ready:
                 # regenerate from the last real user message
                 hist = ctx.get("conversation_history") or []
                 last_msg = next(
@@ -1921,11 +1926,15 @@ class ChatAssistant:
                 intent_tag in CONTEXT_DEPENDENT_INTENTS
                 and bool(self._gen_context(user_id))
             )
-            if self.generative_ready and (self.generative_all or ctx_reply):
+            if self.generative_ready and intent_tag not in DYNAMIC_INTENTS:
                 text = self._generate_reply(
                     message, on_token, intent_hint=intent_tag, user_id=user_id
                 )
             else:
+                self.last_thought = (
+                    f"matches {intent_tag.replace('_', ' ')} - this needs the "
+                    f"exact handler, not generated text."
+                )
                 text = self._build_response(intent_tag, entities, user_id, message)
             return self._finalize(message, text, intent_tag, 1.0, entities, user_id)
 
@@ -1950,6 +1959,10 @@ class ChatAssistant:
                 self._update_context("generative", message, user_id)
                 return self._finalize(message, text, "generative", confidence, {}, user_id)
             self._tr(f"route: fallback (conf {confidence:.2f})")
+            self.last_thought = (
+                f"not confident what this means (best guess: {intent_tag}, "
+                f"{confidence:.0%}) - asking instead of pretending."
+            )
             suggestions = self._suggest_intents(message)
             text = self._fallback_response(message, suggestions)
             return self._finalize(message, text, "fallback", confidence, {}, user_id)
@@ -1965,15 +1978,7 @@ class ChatAssistant:
         # context they should continue the thread via generation, not a
         # canned line that ignores what was being discussed
         has_ctx = bool(self._gen_context(user_id))
-        if (
-            self.generative_ready
-            and intent_tag not in DYNAMIC_INTENTS
-            and (
-                self.generative_all
-                or intent_tag in GENERATIVE_INTENTS
-                or (intent_tag in CONTEXT_DEPENDENT_INTENTS and has_ctx)
-            )
-        ):
+        if self.generative_ready and intent_tag not in DYNAMIC_INTENTS:
             self._tr(f"route: generative (hint={intent_tag}, ctx={has_ctx})")
             text = self._generate_reply(
                 message, on_token, intent_hint=intent_tag, user_id=user_id
@@ -1981,6 +1986,10 @@ class ChatAssistant:
             return self._finalize(message, text, intent_tag, confidence, entities, user_id)
 
         self._tr(f"route: extension/canned -> {intent_tag}")
+        self.last_thought = (
+            f"this is a {intent_tag.replace('_', ' ')} request "
+            f"({confidence:.0%}) - the deterministic handler is exact for it."
+        )
         text = self._build_response(intent_tag, entities, user_id, message)
         return self._finalize(message, text, intent_tag, confidence, entities, user_id)
 
@@ -2596,20 +2605,15 @@ def interactive_chat(assistant: ChatAssistant) -> None:
             print("Goodbye!")
             break
 
-        streamed = {"used": False}
-
-        def emit(piece: str) -> None:
-            if not streamed["used"]:
-                print(f"\n{assistant.ai_name}: ", end="", flush=True)
-            streamed["used"] = True
-            print(piece, end="", flush=True)
+        response = assistant.handle_message(user_input)
+        # thinking on its own line, answer after — for every route
+        if assistant.last_thought:
+            print(f"\n   (thinking) {assistant.last_thought}", flush=True)
+        print(f"\n{assistant.ai_name}: ", end="", flush=True)
+        for word in response.text.split(" "):
+            print(word + " ", end="", flush=True)
             time.sleep(0.008)  # typing effect
-
-        response = assistant.handle_message(user_input, on_token=emit)
-        if streamed["used"]:
-            print(flush=True)  # newline after streamed text
-        else:
-            print(f"\n{assistant.ai_name}: {response.text}", flush=True)
+        print(flush=True)
         print(f"   [{response.intent} | {response.confidence:.2f}]", flush=True)
         for step in assistant.last_trace:
             print(f"   [think] {step}", flush=True)
@@ -2623,9 +2627,6 @@ def main() -> None:
     assistant = load_or_train_assistant(
         force_train=force_train, generative=generative
     )
-    if "--gen-all" in args:
-        assistant.generative_all = True
-        print("(full generative mode — the transformer writes every reply)")
     if "--think" in args:
         assistant.think = True
         print("(think mode — shows the decision trace after each reply)")

@@ -43,19 +43,18 @@ Persistent memory covers your name and the bot's name across restarts.
 
 ## Thinking
 
-Two layers, both real:
+Every reply shows a `(thinking)` line above the answer:
 
-1. **Generated reasoning** — every training target is
-   `[think] short reasoning [answer] reply`, so the transformer emits a
-   reasoning step *before* answering. The CLI shows it as
-   `(thinking) ...` above the reply. It's the same mechanism reasoning
-   models use — learned thought-then-answer structure — just shallow at
-   18M params.
+- **Generative routes** — the transformer literally writes the thought:
+  every training target is `[think] reasoning [answer] reply`, so the
+  model emits reasoning first, then the answer. Context-conditioned
+  thoughts reference the previous turn ("earlier they said X, now Y").
+- **Deterministic routes** (math, names, tools, games) — the thought is
+  the real routing reason ("this is arithmetic - computing exactly").
+  Honest pipeline state, not fake reasoning.
 
-2. **Pipeline trace** — `python main.py --think` prints the actual
-   decision path per reply: which rule fired, classifier top-3 intents,
-   which route answered (tool / extension / transformer / LLM). Not fake
-   chain-of-thought — real pipeline state.
+`python main.py --think` additionally prints the full decision trace:
+which rule fired, classifier top-3 intents, which route answered.
 
 ## More data
 
@@ -93,7 +92,7 @@ Options:
 
 ```bash
 python main.py --train    # force retrain both models
-python main.py --gen-all  # let the transformer answer everything it can
+python main.py --think    # show the decision trace too
 python main.py --no-gen   # classifier only, no generation
 python -m pytest tests/   # test suite
 ```
