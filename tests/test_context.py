@@ -62,6 +62,31 @@ class TestThinkTrace:
         assert any("classifier" in s or "rule" in s for s in a.last_trace)
 
 
+class TestThoughtSplit:
+    def test_splits_think_and_answer(self):
+        a = _assistant()
+        raw = "think intent is joke. they mention humor. answer why did the chicken cross"
+        assert a._split_thought(raw) == "Why did the chicken cross"
+        assert "Intent is joke" in a.last_thought
+
+    def test_bracketed_form(self):
+        a = _assistant()
+        raw = "[think] reasoning here [answer] real reply"
+        assert a._split_thought(raw) == "Real reply"
+        assert a.last_thought == "Reasoning here"
+
+    def test_no_markers_passes_through(self):
+        a = _assistant()
+        assert a._split_thought("just a normal reply") == "Just a normal reply"
+        assert a.last_thought == ""
+
+    def test_thought_reset_each_call(self):
+        a = _assistant()
+        a._split_thought("think reasoning answer reply")
+        a._split_thought("plain text")
+        assert a.last_thought == ""
+
+
 class TestLLMClient:
     def test_unconfigured_by_default(self):
         with patch.dict(os.environ, {}, clear=True):

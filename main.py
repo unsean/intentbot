@@ -1153,6 +1153,8 @@ class ChatAssistant:
         self.last_trace: List[str] = []
         # optional real-LLM backend (Ollama/LM Studio/OpenAI-compatible)
         self.llm = LLMClient()
+        # reasoning text the transformer produced before its answer
+        self.last_thought: str = ""
 
         self.intents: List[str] = []
         self.responses: Dict[str, List[str]] = {}
@@ -1187,6 +1189,7 @@ class ChatAssistant:
         for path in [
             self.intents_path, *self.extra_intents_paths, *self.extra_training_paths,
             DATA_DIR / "conversations.json",
+            DATA_DIR / "conversations_gen.json",
         ]:
             try:
                 with open(path, "rb") as f:
@@ -1541,16 +1544,22 @@ class ChatAssistant:
         all_texts += list(self.raw_texts.keys())  # intent tags as conditioning tokens
 
         convos: List[dict] = []
-        convo_path = DATA_DIR / "conversations.json"
-        if convo_path.exists():
-            convos = json.loads(
-                convo_path.read_text(encoding="utf-8")
-            ).get("conversations", [])
+        for convo_path in (
+            DATA_DIR / "conversations.json",
+            DATA_DIR / "conversations_gen.json",
+        ):
+            if convo_path.exists():
+                convos += json.loads(
+                    convo_path.read_text(encoding="utf-8")
+                ).get("conversations", [])
         for c in convos:
             for turn in c.get("turns", []):
-                all_texts += [turn.get("u", ""), turn.get("b", "")]
-        # separator + generic context tag used in context-conditioned pairs
-        all_texts += ["|", "chat"]
+                all_texts += [
+                    turn.get("u", ""), turn.get("b", ""), turn.get("t", ""),
+                    "think", "answer",
+                ]
+        # separator + context tag + think markers used in training pairs
+        all_texts += ["|", "chat", "[think]", "[answer]"]
         self.gen_vocab.build(all_texts)
 
         pairs = build_pairs(
@@ -1658,27 +1667,43 @@ class ChatAssistant:
             return self._fallback_response(message, [])
 
         if mode == "beam":
-            # beam search can't stream mid-search, so emit the finished
-            # reply word-by-word to keep the typing effect
             ids = self.gen_model.generate_beam(src, device=self.device)
-            text = clean_reply(self.gen_vocab.decode(ids))
-            if on_token and text:
+            raw = self.gen_vocab.decode(ids)
+            text = self._split_thought(raw)
+            if on_token:
+                if self.last_thought:
+                    on_token(f"(thinking) {self.last_thought}\n")
                 for word in text.split(" "):
                     on_token(word + " ")
             return text or self._fallback_response(message, [])
 
         ids: List[int] = []
-        prev_text = ""
         for tok_id in self.gen_model.generate_stream(src, device=self.device):
             ids.append(tok_id)
-            if on_token is not None:
-                current = self.gen_vocab.decode(ids)
-                delta = current[len(prev_text):]
-                if delta:
-                    on_token(to_ascii(delta))
-                prev_text = current
-        text = clean_reply(self.gen_vocab.decode(ids))
+        text = self._split_thought(self.gen_vocab.decode(ids))
+        if on_token:
+            if self.last_thought:
+                on_token(f"(thinking) {self.last_thought}\n")
+            for word in text.split(" "):
+                on_token(word + " ")
         return text or self._fallback_response(message, [])
+
+    _THINK_RE = re.compile(
+        r"\[?\s*think\s*\]?\s*(.*?)\s*\[?\s*answer\s*\]?\s*(.*)$",
+        re.IGNORECASE | re.DOTALL,
+    )
+
+    def _split_thought(self, raw: str) -> str:
+        """Split a generated 'think ... answer ...' reply into the visible
+        answer; the reasoning part is stored on self.last_thought."""
+        self.last_thought = ""
+        m = self._THINK_RE.match(raw)
+        if not m:
+            return clean_reply(raw)
+        thought, answer = m.group(1), m.group(2)
+        self.last_thought = clean_reply(thought)
+        self._tr(f"model thought: {self.last_thought}")
+        return clean_reply(answer)
 
     def _llm_messages(
         self, message: str, user_id: str

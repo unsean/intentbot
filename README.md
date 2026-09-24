@@ -41,15 +41,28 @@ Same flow works for `search`, `wikipedia`, and `crypto price`. Short
 answers (≤2 words) feed the pending question; real commands interrupt it.
 Persistent memory covers your name and the bot's name across restarts.
 
-## Thinking (`--think`)
+## Thinking
 
-```bash
-python main.py --think
-```
+Two layers, both real:
 
-Prints the real decision trace after each reply — which rule fired, the
-classifier's top-3 intents, and which route answered (tool / extension /
-transformer / LLM). Not a fake chain-of-thought: it's the actual pipeline.
+1. **Generated reasoning** — every training target is
+   `[think] short reasoning [answer] reply`, so the transformer emits a
+   reasoning step *before* answering. The CLI shows it as
+   `(thinking) ...` above the reply. It's the same mechanism reasoning
+   models use — learned thought-then-answer structure — just shallow at
+   18M params.
+
+2. **Pipeline trace** — `python main.py --think` prints the actual
+   decision path per reply: which rule fired, classifier top-3 intents,
+   which route answered (tool / extension / transformer / LLM). Not fake
+   chain-of-thought — real pipeline state.
+
+## More data
+
+`scripts/gen_conversations.py` generates multi-turn dialogues
+combinatorially (topics x phrasings x advice scenarios) into
+`data/conversations_gen.json` — rerun it after editing the templates to
+grow the context dataset. Both conversation files feed the transformer.
 
 ## Real LLM backend (optional)
 
@@ -82,7 +95,7 @@ Options:
 python main.py --train    # force retrain both models
 python main.py --gen-all  # let the transformer answer everything it can
 python main.py --no-gen   # classifier only, no generation
-python -m pytest tests/   # 60 tests
+python -m pytest tests/   # test suite
 ```
 
 ## How a message flows
@@ -106,7 +119,8 @@ main.py                  # assistant logic, classifier, CLI
 generative.py            # transformer: vocab, training, beam search, streaming
 tools.py                 # live tools: search, wikipedia, weather, crypto, time
 llm.py                   # optional OpenAI-compatible LLM backend
-data/conversations.json  # multi-turn dialogues for context training
+data/conversations.json      # hand-written multi-turn dialogues
+data/conversations_gen.json  # generated multi-turn dialogues (script)
 web.py                   # Flask app (POST /chat, SSE /chat/stream, /status)
 templates/index.html     # dark web UI with live streaming
 data/intents.json        # core intents

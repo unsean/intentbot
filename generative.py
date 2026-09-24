@@ -356,6 +356,23 @@ class GenTrainResult:
     vocab_size: int
 
 
+_THOUGHT_TEMPLATES = [
+    "intent is {tag}. they mention {kw}. reply briefly and stay on topic.",
+    "the topic is {kw} under {tag}. acknowledge it, add one useful point.",
+    "{tag} - respond to {kw} directly in a casual tone.",
+    "they said '{kw}' which maps to {tag}. keep the reply short and warm.",
+]
+
+
+def _make_thought(tag: str, text: str, rng: random.Random) -> str:
+    """A short reasoning line the model learns to emit before replying."""
+    words = [w for w in gen_tokenize(text) if w.isalpha()][:4]
+    kw = " ".join(words) or "this"
+    return rng.choice(_THOUGHT_TEMPLATES).format(
+        tag=tag.replace("_", " "), kw=kw
+    )
+
+
 def build_pairs(
     documents: List[Tuple[List[str], List[str], str]],
     raw_texts_by_intent: Dict[str, List[str]],
@@ -372,14 +389,20 @@ def build_pairs(
       no context:   "intent_tag | message"
       with context: "intent_tag | prev_user | prev_bot | message"
 
-    `conversations` provides real multi-turn dialogues (each turn dict has
-    u/b keys); additionally a fraction of plain pairs get wrapped with a
-    random prior turn so the model learns to use — or ignore — context.
+    Targets carry a reasoning trace the model learns to produce first:
+      "[think] short reasoning [answer] the actual reply"
+
+    `conversations` provides multi-turn dialogues (u/b turns, optional "t"
+    for a hand-written thought); a fraction of plain pairs also get wrapped
+    with a random prior turn so the model learns the context format.
     """
     exclude = exclude_intents or set()
     rng = random.Random(seed)
     pairs: List[Tuple[str, str]] = []
     turn_pool: List[Tuple[str, str]] = []  # (user_msg, bot_resp) candidates
+
+    def think_tgt(thought: str, reply: str) -> str:
+        return f"[think] {thought} [answer] {reply}"
 
     for tag, texts in raw_texts_by_intent.items():
         if tag in exclude:
@@ -392,8 +415,9 @@ def build_pairs(
         if not resp:
             continue
         for text in texts:
+            thought = _make_thought(tag, text, rng)
             for r in rng.sample(resp, min(2, len(resp))):
-                pairs.append((f"{tag} | {text}", r))
+                pairs.append((f"{tag} | {text}", think_tgt(thought, r)))
                 turn_pool.append((text, r))
 
     # real multi-turn dialogues -> context-conditioned pairs
@@ -401,9 +425,16 @@ def build_pairs(
         turns = convo.get("turns", convo) if isinstance(convo, dict) else convo
         for i in range(1, len(turns)):
             prev_u, prev_b = turns[i - 1].get("u", ""), turns[i - 1].get("b", "")
-            cur_u, cur_b = turns[i].get("u", ""), turns[i].get("b", "")
+            cur = turns[i]
+            cur_u, cur_b = cur.get("u", ""), cur.get("b", "")
             if all((prev_u, prev_b, cur_u, cur_b)):
-                pairs.append((f"chat | {prev_u} | {prev_b} | {cur_u}", cur_b))
+                thought = cur.get("t") or _make_thought("chat", cur_u, rng)
+                pairs.append(
+                    (
+                        f"chat | {prev_u} | {prev_b} | {cur_u}",
+                        think_tgt(thought, cur_b),
+                    )
+                )
 
     # wrap a fraction of plain pairs with a random prior turn — teaches the
     # model the context format and to focus on the last turn
