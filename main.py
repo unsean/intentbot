@@ -1094,6 +1094,13 @@ GENERATIVE_INTENTS = {
     "language_learning", "emotion_support",
 }
 
+# Short-reply intents whose right answer depends entirely on context —
+# routed to the generator when a conversation thread is active.
+CONTEXT_DEPENDENT_INTENTS = {
+    "affirmation_yes", "negation_no", "uncertainty_idk",
+    "clarification_requests",
+}
+
 # Intents whose replies are computed by rules/extensions — never used as
 # generative training targets, and never generated even in --gen-all mode.
 DYNAMIC_INTENTS = {
@@ -1621,16 +1628,17 @@ class ChatAssistant:
         logger.info("Warmup inference done")
 
     def _gen_context(self, user_id: str) -> str:
-        """Last turn as 'user | bot' — the context the transformer was
-        trained to read, so generation can condition on the conversation."""
+        """Last *completed* turn as 'user | bot' — the context the
+        transformer was trained to read. The current message is already in
+        history by the time this runs, but has no bot reply yet, so we walk
+        back to the last turn that does."""
         hist = (self.current_context.get(user_id) or {}).get(
             "conversation_history"
         ) or []
-        last = hist[-1] if hist else None
+        last = next((h for h in reversed(hist) if h.get("bot")), None)
         if not last:
             return ""
-        u, b = last.get("message"), last.get("bot")
-        return f"{u} | {b}" if (u and b) else (u or "")
+        return f"{last['message']} | {last['bot']}"
 
     def _generate_reply(
         self,
@@ -1909,7 +1917,11 @@ class ChatAssistant:
             self._tr(f"rule override -> {intent_tag}")
             entities = self._extract_entities(message, intent_tag)
             self._update_context(intent_tag, message, user_id)
-            if self.generative_all and self.generative_ready:
+            ctx_reply = (
+                intent_tag in CONTEXT_DEPENDENT_INTENTS
+                and bool(self._gen_context(user_id))
+            )
+            if self.generative_ready and (self.generative_all or ctx_reply):
                 text = self._generate_reply(
                     message, on_token, intent_hint=intent_tag, user_id=user_id
                 )
@@ -1949,12 +1961,19 @@ class ChatAssistant:
 
         self._update_context(intent_tag, message, user_id)
 
+        # short replies like "yes"/"idk" mean nothing alone — with live
+        # context they should continue the thread via generation, not a
+        # canned line that ignores what was being discussed
+        has_ctx = bool(self._gen_context(user_id))
         if (
             self.generative_ready
             and intent_tag not in DYNAMIC_INTENTS
-            and (self.generative_all or intent_tag in GENERATIVE_INTENTS)
+            and (
+                self.generative_all
+                or intent_tag in GENERATIVE_INTENTS
+                or (intent_tag in CONTEXT_DEPENDENT_INTENTS and has_ctx)
+            )
         ):
-            has_ctx = bool(self._gen_context(user_id))
             self._tr(f"route: generative (hint={intent_tag}, ctx={has_ctx})")
             text = self._generate_reply(
                 message, on_token, intent_hint=intent_tag, user_id=user_id

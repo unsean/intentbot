@@ -373,6 +373,22 @@ def _make_thought(tag: str, text: str, rng: random.Random) -> str:
     )
 
 
+_CTX_THOUGHT_TEMPLATES = [
+    "earlier they said '{pu}'. now '{cu}' - continue that thread.",
+    "this follows '{pu}' - the reply should connect to it.",
+    "they mentioned '{pu}' before; '{cu}' is about that. answer in context.",
+    "context: {pu}. current: {cu}. reply to the second, informed by the first.",
+]
+
+
+def _make_ctx_thought(prev_u: str, cur_u: str, rng: random.Random) -> str:
+    """A reasoning line that explicitly carries the previous turn — this is
+    what teaches the model that thinking = integrating context."""
+    pu = " ".join(w for w in gen_tokenize(prev_u) if w.isalpha())[:40] or "something"
+    cu = " ".join(w for w in gen_tokenize(cur_u) if w.isalpha())[:40] or "this"
+    return rng.choice(_CTX_THOUGHT_TEMPLATES).format(pu=pu, cu=cu)
+
+
 def build_pairs(
     documents: List[Tuple[List[str], List[str], str]],
     raw_texts_by_intent: Dict[str, List[str]],
@@ -382,6 +398,7 @@ def build_pairs(
     seed: int = 42,
     conversations: Optional[List[dict]] = None,
     context_ratio: float = 0.15,
+    convo_weight: int = 4,
 ) -> List[Tuple[str, str]]:
     """Build (source, response) training pairs from intent data.
 
@@ -428,23 +445,33 @@ def build_pairs(
             cur = turns[i]
             cur_u, cur_b = cur.get("u", ""), cur.get("b", "")
             if all((prev_u, prev_b, cur_u, cur_b)):
-                thought = cur.get("t") or _make_thought("chat", cur_u, rng)
-                pairs.append(
+                thought = cur.get("t") or _make_ctx_thought(prev_u, cur_u, rng)
+                # oversample real dialogues — hundreds of context pairs get
+                # drowned by tens of thousands of plain pairs otherwise
+                pairs += [
                     (
                         f"chat | {prev_u} | {prev_b} | {cur_u}",
                         think_tgt(thought, cur_b),
                     )
-                )
+                ] * convo_weight
 
-    # wrap a fraction of plain pairs with a random prior turn — teaches the
-    # model the context format and to focus on the last turn
-    if turn_pool and context_ratio > 0:
+    # wrap a fraction of plain pairs with a SAME-INTENT prior turn —
+    # topically coherent context teaches the model context is usually
+    # relevant (fully random context teaches it to ignore context instead)
+    if context_ratio > 0:
+        by_tag: Dict[str, List[Tuple[str, str]]] = {}
+        for src, tgt in pairs:
+            tag = src.split(" | ", 1)[0]
+            if tag != "chat":
+                msg = src.split(" | ", 1)[1]
+                by_tag.setdefault(tag, []).append((msg, tgt))
         n_ctx = int(len(pairs) * context_ratio)
-        plain = pairs[:]  # snapshot before adding wrapped variants
+        plain = [(s, t) for s, t in pairs if s.split(" | ", 1)[0] != "chat"]
         for _ in range(n_ctx):
             src, tgt = rng.choice(plain)
-            pu, pb = rng.choice(turn_pool)
             tag, msg = src.split(" | ", 1)
+            pool = by_tag.get(tag) or list(turn_pool)
+            pu, pb = rng.choice(pool)
             pairs.append((f"{tag} | {pu} | {pb} | {msg}", tgt))
 
     rng.shuffle(pairs)
