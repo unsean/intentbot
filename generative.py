@@ -203,10 +203,13 @@ class Seq2SeqTransformer(nn.Module):
         max_len: int = _MAX_TGT_LEN,
         temperature: float = 0.8,
         top_k: int = 6,
+        prefix_ids: Optional[List[int]] = None,
         device: Optional[torch.device] = None,
     ):
         """Autoregressive decoding; yields one token id at a time so callers
-        can stream output word-by-word."""
+        can stream output word-by-word. prefix_ids are teacher-forced onto
+        the decoder input (never yielded) — used to pin the intent tag into
+        the thought prefix."""
         device = device or next(self.parameters()).device
         self.eval()
         src = torch.tensor([[BOS] + src_ids + [EOS]], device=device)
@@ -214,7 +217,7 @@ class Seq2SeqTransformer(nn.Module):
         memory = self.transformer.encoder(
             self._scale(src), src_key_padding_mask=src_pad
         )
-        ys = torch.tensor([[BOS]], device=device)
+        ys = torch.tensor([[BOS] + list(prefix_ids or [])], device=device)
         for _ in range(max_len):
             t = ys.size(1)
             tgt_mask = torch.triu(
@@ -248,10 +251,14 @@ class Seq2SeqTransformer(nn.Module):
         beam_size: int = 4,
         length_penalty: float = 0.7,
         repetition_penalty: float = 1.2,
+        prefix_ids: Optional[List[int]] = None,
         device: Optional[torch.device] = None,
     ) -> List[int]:
         """Beam search decoding — keeps the most probable sequences instead
-        of sampling. More coherent than top-k for small models."""
+        of sampling. More coherent than top-k for small models.
+        prefix_ids are teacher-forced onto the decoder input and stripped
+        from the returned ids — used to pin the intent tag into the
+        thought prefix so generated reasoning names the real intent."""
         device = device or next(self.parameters()).device
         self.eval()
         src = torch.tensor([[BOS] + src_ids + [EOS]], device=device)
@@ -261,7 +268,8 @@ class Seq2SeqTransformer(nn.Module):
         )
 
         # beams: (token_id_list, cumulative_log_prob)
-        beams: List[Tuple[List[int], float]] = [([BOS], 0.0)]
+        prefix = list(prefix_ids or [])
+        beams: List[Tuple[List[int], float]] = [([BOS] + prefix, 0.0)]
         for _ in range(max_len):
             candidates: List[Tuple[List[int], float]] = []
             for seq, score in beams:
@@ -303,7 +311,7 @@ class Seq2SeqTransformer(nn.Module):
                 break
 
         best = max(beams, key=lambda c: c[1] / (len(c[0]) ** length_penalty))
-        return best[0][1:]  # drop BOS
+        return best[0][1 + len(prefix):]  # drop BOS + forced prefix
 
     def generate(
         self,
@@ -444,8 +452,10 @@ def build_pairs(
     pairs: List[Tuple[str, str]] = []
     turn_pool: List[Tuple[str, str]] = []  # (user_msg, bot_resp) candidates
 
-    def think_tgt(thought: str, reply: str) -> str:
-        return f"[think] {thought} [answer] {reply}"
+    def think_tgt(tag: str, thought: str, reply: str) -> str:
+        # tag inside the think prefix — at inference it's teacher-forced so
+        # the thought always names the REAL intent, not a hallucinated one
+        return f"[think] {tag} | {thought} [answer] {reply}"
 
     for tag, texts in raw_texts_by_intent.items():
         if tag in exclude:
@@ -461,12 +471,22 @@ def build_pairs(
         for text in texts:
             thought = _make_thought(tag, text, rng)
             for r in rng.sample(resp, min(2, len(resp))):
-                pairs.append((f"{tag} | {text}", think_tgt(thought, r)))
+                pairs.append((f"{tag} | {text}", think_tgt(tag, thought, r)))
                 turn_pool.append((text, r))
 
     # real multi-turn dialogues -> context-conditioned pairs
     for convo in conversations or []:
         turns = convo.get("turns", convo) if isinstance(convo, dict) else convo
+        if not turns:
+            continue
+        # the first turn has no context — train it as a single-turn pair
+        t0 = turns[0]
+        u0, b0 = t0.get("u", ""), t0.get("b", "")
+        if u0 and b0 and not _is_indonesian(b0):
+            thought = t0.get("t") or _make_thought("chat", u0, rng)
+            pairs += [
+                (f"chat | {u0}", think_tgt("chat", thought, b0))
+            ] * convo_weight
         for i in range(1, len(turns)):
             prev_u, prev_b = turns[i - 1].get("u", ""), turns[i - 1].get("b", "")
             cur = turns[i]
@@ -478,7 +498,7 @@ def build_pairs(
                 pairs += [
                     (
                         f"chat | {prev_u} | {prev_b} | {cur_u}",
-                        think_tgt(thought, cur_b),
+                        think_tgt("chat", thought, cur_b),
                     )
                 ] * convo_weight
 

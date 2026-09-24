@@ -1689,10 +1689,16 @@ class ChatAssistant:
         if not src:
             return self._fallback_response(message, [])
 
+        # teacher-force the real intent into the thought prefix — the model
+        # generates the reasoning + answer, but can't hallucinate the intent
+        prefix = self.gen_vocab.encode(f"[think] {hint} |", 12)
+
         if mode == "beam":
-            ids = self.gen_model.generate_beam(src, device=self.device)
+            ids = self.gen_model.generate_beam(
+                src, prefix_ids=prefix, device=self.device
+            )
             raw = self.gen_vocab.decode(ids)
-            text = self._split_thought(raw)
+            text = self._split_thought(raw, hint)
             if on_token:
                 if self.last_thought:
                     on_token(f"(thinking) {self.last_thought}\n")
@@ -1701,9 +1707,11 @@ class ChatAssistant:
             return text or self._fallback_response(message, [])
 
         ids: List[int] = []
-        for tok_id in self.gen_model.generate_stream(src, device=self.device):
+        for tok_id in self.gen_model.generate_stream(
+            src, prefix_ids=prefix, device=self.device
+        ):
             ids.append(tok_id)
-        text = self._split_thought(self.gen_vocab.decode(ids))
+        text = self._split_thought(self.gen_vocab.decode(ids), hint)
         if on_token:
             if self.last_thought:
                 on_token(f"(thinking) {self.last_thought}\n")
@@ -1715,18 +1723,33 @@ class ChatAssistant:
         r"\[?\s*think\s*\]?\s*(.*?)\s*\[?\s*answer\s*\]?\s*(.*)$",
         re.IGNORECASE | re.DOTALL,
     )
+    _ANSWER_RE = re.compile(
+        r"^(.*?)\s*\[?\s*answer\s*\]?\s*(.*)$", re.IGNORECASE | re.DOTALL
+    )
 
-    def _split_thought(self, raw: str) -> str:
-        """Split a generated 'think ... answer ...' reply into the visible
-        answer; the reasoning part is stored on self.last_thought."""
+    def _split_thought(self, raw: str, hint: str = "chat") -> str:
+        """Split generated reasoning from the visible answer.
+
+        Current format (intent teacher-forced, stripped before this call):
+            "{reasoning} [answer] {reply}"  -> thought = "{hint}: {reasoning}"
+        Legacy format still handled:
+            "[think] {thought} [answer] {reply}"
+        """
         self.last_thought = ""
         m = self._THINK_RE.match(raw)
-        if not m:
-            return clean_reply(raw)
-        thought, answer = m.group(1), m.group(2)
-        self.last_thought = clean_reply(thought)
-        self._tr(f"model thought: {self.last_thought}")
-        return clean_reply(answer)
+        if m:
+            self.last_thought = clean_reply(m.group(1))
+            self._tr(f"model thought: {self.last_thought}")
+            return clean_reply(m.group(2))
+        m = self._ANSWER_RE.match(raw)
+        if m:
+            reasoning = clean_reply(m.group(1))
+            self.last_thought = (
+                f"{hint}: {reasoning}" if reasoning else hint
+            )
+            self._tr(f"model thought: {self.last_thought}")
+            return clean_reply(m.group(2))
+        return clean_reply(raw)
 
     def _llm_messages(
         self, message: str, user_id: str
@@ -1958,8 +1981,10 @@ class ChatAssistant:
                 and bool(self._gen_context(user_id))
             )
             if self.generative_ready and intent_tag not in DYNAMIC_INTENTS:
+                # context-dependent replies trained under the "chat" tag
+                hint = "chat" if ctx_reply else intent_tag
                 text = self._generate_reply(
-                    message, on_token, intent_hint=intent_tag, user_id=user_id
+                    message, on_token, intent_hint=hint, user_id=user_id
                 )
             else:
                 self.last_thought = (
@@ -1980,12 +2005,14 @@ class ChatAssistant:
         if confidence < self.confidence_threshold:
             if self.generative_ready and self._gen_has_signal(message):
                 has_ctx = bool(self._gen_context(user_id))
+                # low-conf intent is basically noise — use "chat" so the src
+                # matches the dialogue pairs the model trained on
                 self._tr(
                     f"route: generative (conf {confidence:.2f} < "
-                    f"{self.confidence_threshold}, hint={intent_tag}, ctx={has_ctx})"
+                    f"{self.confidence_threshold}, hint=chat, ctx={has_ctx})"
                 )
                 text = self._generate_reply(
-                    message, on_token, intent_hint=intent_tag, user_id=user_id
+                    message, on_token, intent_hint="chat", user_id=user_id
                 )
                 self._update_context("generative", message, user_id)
                 return self._finalize(message, text, "generative", confidence, {}, user_id)
@@ -2010,9 +2037,11 @@ class ChatAssistant:
         # canned line that ignores what was being discussed
         has_ctx = bool(self._gen_context(user_id))
         if self.generative_ready and intent_tag not in DYNAMIC_INTENTS:
-            self._tr(f"route: generative (hint={intent_tag}, ctx={has_ctx})")
+            ctx_dep = intent_tag in CONTEXT_DEPENDENT_INTENTS and has_ctx
+            hint = "chat" if ctx_dep else intent_tag
+            self._tr(f"route: generative (hint={hint}, ctx={has_ctx})")
             text = self._generate_reply(
-                message, on_token, intent_hint=intent_tag, user_id=user_id
+                message, on_token, intent_hint=hint, user_id=user_id
             )
             return self._finalize(message, text, intent_tag, confidence, entities, user_id)
 
